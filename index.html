@@ -891,9 +891,71 @@ body::after{
 
 /* PixelCursor */
 *{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Crect x='0' y='0' width='4' height='4' fill='%23ff2d9b'/%3E%3Crect x='4' y='4' width='4' height='4' fill='%23ff2d9b'/%3E%3Crect x='8' y='8' width='4' height='4' fill='%23ff2d9b' opacity='0.5'/%3E%3C/svg%3E") 0 0, crosshair}
+
+/* ===== ADMIN PANEL ===== */
+.admin-panel { padding: 16px; }
+.admin-section { margin-bottom: 20px; background: rgba(255,45,155,0.05); border: 1px solid var(--border-pk); padding: 14px; }
+.admin-section-title { font-family: var(--pixel); font-size: 8px; color: var(--pk1); margin-bottom: 12px; letter-spacing: 1px; }
+.admin-stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
+.admin-stat { background: rgba(0,200,255,0.05); border: 1px solid var(--border-bl); padding: 12px; text-align: center; }
+.admin-stat-num { font-family: var(--pixel); font-size: 14px; color: var(--bl1); }
+.admin-stat-label { font-size: 11px; color: #666; margin-top: 4px; }
+.admin-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.admin-table th { background: rgba(255,45,155,0.2); color: var(--pk1); font-family: var(--pixel); font-size: 7px; padding: 8px; text-align: left; }
+.admin-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #ccc; }
+.admin-table tr:hover td { background: rgba(255,45,155,0.05); }
+.admin-badge { font-family: var(--pixel); font-size: 6px; padding: 3px 7px; }
+.badge-admin { background: rgba(255,45,155,0.2); color: var(--pk1); border: 1px solid var(--pk1); }
+.badge-user { background: rgba(0,200,255,0.1); color: var(--bl1); border: 1px solid var(--bl1); }
+.admin-input { background: rgba(255,255,255,0.05); border: 1px solid var(--border-pk); color: #fff; font-family: var(--mono); font-size: 13px; padding: 8px; width: 100%; margin-bottom: 8px; }
+.admin-btn { font-family: var(--pixel); font-size: 7px; padding: 8px 14px; border: none; cursor: pointer; letter-spacing: 1px; }
+.admin-btn-pk { background: var(--pk1); color: #fff; }
+.admin-btn-bl { background: var(--bl2); color: #fff; }
+.admin-btn-red { background: #cc0000; color: #fff; }
+.admin-log { background: #000; padding: 10px; font-family: var(--mono); font-size: 11px; max-height: 150px; overflow-y: auto; }
+.admin-log-item { color: #0f0; margin-bottom: 3px; }
+.admin-log-item.warn { color: var(--pk1); }
+.admin-log-item.err { color: red; }
+
+
+/* TOUCH FIX — all buttons work on mobile */
+button, [data-action], .auth-tab, .sidebar-item, .style-chip, .size-btn, .tool-card, .quick-btn {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(255,45,155,0.2);
+  cursor: pointer;
+}
 </style>
 </head>
 <body>
+<script>
+// DISPATCHER — defined immediately, before any other script loads
+function w(action, arg) {
+  // Wait for real functions to be ready
+  var attempts = 0;
+  var run = function() {
+    try {
+      if (action==='switchTab')    { switchTab(arg); }
+      else if (action==='googleLogin')   { doGoogleLogin(); }
+      else if (action==='toggleSidebar') { toggleSidebar(); }
+      else if (action==='closeSidebar')  { closeSidebar(); }
+      else if (action==='newChat')       { newChat(); }
+      else if (action==='clearChat')     { clearChat(); }
+      else if (action==='switchPanel')   { switchPanel(arg); }
+      else if (action==='openModal')     { openModal(arg); }
+      else if (action==='closeModal')    { closeModal(arg); }
+      else if (action==='closeTool')     { closeTool(); }
+      else if (action==='doLogin')       { doLogin(); }
+      else if (action==='doRegister')    { doRegister(); }
+      else if (action==='doForgot')      { doForgot(); }
+      else if (action==='sendMsg')       { sendMessage(); }
+      else if (action==='genImg')        { generateImage(); }
+    } catch(e) {
+      if (attempts++ < 20) setTimeout(run, 100);
+    }
+  };
+  run();
+}
+</script>
 
 <!-- BG EFFECTS -->
 <div class="bg-grid"></div>
@@ -931,8 +993,8 @@ body::after{
 
     <!-- TABS -->
     <div class="auth-tabs">
-      <div class="auth-tab active" data-action="switchTab" data-tab="login">LOGIN</div>
-      <div class="auth-tab" data-action="switchTab" data-tab="register">REGISTER</div>
+      <div class="auth-tab active" onclick="w('switchTab','login')">LOGIN</div>
+      <div class="auth-tab" onclick="w('switchTab','register')">REGISTER</div>
     </div>
 
     <div class="auth-body">
@@ -947,16 +1009,16 @@ body::after{
           <input class="form-input" type="password" placeholder="••••••••" id="loginPass">
         </div>
         <div style="text-align:right;margin-bottom:16px">
-          <button class="link-btn" data-action="switchTab" data-tab="forgot">▷ Forgot Password?</button>
+          <button class="link-btn" onclick="w('switchTab','forgot')">▷ Forgot Password?</button>
         </div>
-        <button class="btn-primary" id="btnLogin">  ENTER EXBOTZ</button>
+        <button class="btn-primary" id="btnLogin" onclick="w('doLogin')">  ENTER EXBOTZ</button>
         <div class="divider">OR</div>
-        <button class="btn-google" data-action="googleLogin">
+        <button class="btn-google" onclick="w('googleLogin')">
           <div class="google-icon"></div>
           Continue with Google
         </button>
         <div class="auth-footer">
-          No account? <button class="link-btn" data-action="switchTab" data-tab="register">Register here</button>
+          No account? <button class="link-btn" onclick="w('switchTab','register')">Register here</button>
         </div>
       </div>
 
@@ -981,20 +1043,20 @@ body::after{
         <div style="margin-bottom:16px;font-size:12px;color:#555">
           By registering, you agree to our <button class="link-btn" style="font-size:12px">Terms of Service</button>
         </div>
-        <button class="btn-primary" id="btnRegister">  CREATE ACCOUNT</button>
+        <button class="btn-primary" id="btnRegister" onclick="w('doRegister')">  CREATE ACCOUNT</button>
         <div class="divider">OR</div>
-        <button class="btn-google" data-action="googleLogin">
+        <button class="btn-google" onclick="w('googleLogin')">
           <div class="google-icon"></div>
           Sign up with Google
         </button>
         <div class="auth-footer">
-          Already have account? <button class="link-btn" data-action="switchTab" data-tab="login">Login</button>
+          Already have account? <button class="link-btn" onclick="w('switchTab','login')">Login</button>
         </div>
       </div>
 
       <!-- FORGOT PW FORM -->
       <div id="forgotForm" style="display:none">
-        <button class="back-btn" data-action="switchTab" data-tab="login">◀ BACK TO LOGIN</button>
+        <button class="back-btn" onclick="w('switchTab','login')">◀ BACK TO LOGIN</button>
         <div class="form-group">
           <label class="form-label">◈ REGISTERED EMAIL</label>
           <input class="form-input" type="email" placeholder="user@email.com" id="forgotEmail">
@@ -1002,9 +1064,9 @@ body::after{
         <div style="font-size:12px;color:#555;margin-bottom:16px;font-family:var(--mono)">
           We'll send a reset link to your email address.
         </div>
-        <button class="btn-primary" id="btnForgot">  SEND RESET LINK</button>
+        <button class="btn-primary" id="btnForgot" onclick="w('doForgot')">  SEND RESET LINK</button>
         <div class="auth-footer" style="margin-top:14px">
-          Remembered? <button class="link-btn" data-action="switchTab" data-tab="login">Back to Login</button>
+          Remembered? <button class="link-btn" onclick="w('switchTab','login')">Back to Login</button>
         </div>
       </div>
     </div>
@@ -1017,46 +1079,46 @@ body::after{
 <div id="mainApp">
   <!-- TOPBAR -->
   <div class="topbar">
-    <button class="sidebar-toggle" id="sidebarToggle" data-action="toggleSidebar">☰</button>
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="w('toggleSidebar')">☰</button>
     <div class="topbar-logo">EX<span>BOTZ</span></div>
     <div class="status-dot"></div>
     <div class="topbar-status">ONLINE</div>
     <div class="topbar-spacer"></div>
     <div class="topbar-btns">
-      <button class="top-btn" onclick="openModal('shortcutsModal')">⌨ SHORTCUTS</button>
-      <button class="top-btn" data-action="newChat">+ NEW CHAT</button>
-      <div class="user-avatar" id="userAvatar" data-action="switchPanel" data-panel="profile">U</div>
+      <button class="top-btn" onclick="w('openModal','shortcutsModal')">⌨ SHORTCUTS</button>
+      <button class="top-btn" onclick="w('newChat')">+ NEW CHAT</button>
+      <div class="user-avatar" id="userAvatar" onclick="w('switchPanel','profile')">U</div>
     </div>
   </div>
 
   <div class="app-layout">
     <!-- SIDEBAR -->
-    <div class="sb-overlay" id="sbOverlay" data-action="closeSidebar"></div>
+    <div class="sb-overlay" id="sbOverlay" onclick="w('closeSidebar')"></div>
     <div class="sidebar" id="sidebar">
       <div class="sidebar-section">◈ NAVIGATION</div>
 
-      <div class="sidebar-item active" data-action="switchPanel" data-panel="chat">
+      <div class="sidebar-item active" onclick="w('switchPanel','chat')">
         <span class="item-icon">💬</span>
         <span class="item-label">Chat AI</span>
         <div class="sidebar-badge">HOT</div>
       </div>
-      <div class="sidebar-item" data-action="switchPanel" data-panel="imagine">
+      <div class="sidebar-item" onclick="w('switchPanel','imagine')">
         <span class="item-icon">🎨</span>
         <span class="item-label">Imagine AI</span>
       </div>
-      <div class="sidebar-item" data-action="switchPanel" data-panel="tools">
+      <div class="sidebar-item" onclick="w('switchPanel','tools')">
         <span class="item-icon">🛠</span>
         <span class="item-label">Tools</span>
       </div>
-      <div class="sidebar-item" data-action="switchPanel" data-panel="history">
+      <div class="sidebar-item" onclick="w('switchPanel','history')">
         <span class="item-icon">📜</span>
         <span class="item-label">History</span>
       </div>
-      <div class="sidebar-item" data-action="switchPanel" data-panel="settings">
+      <div class="sidebar-item" onclick="w('switchPanel','settings')">
         <span class="item-icon">⚙️</span>
         <span class="item-label">Settings</span>
       </div>
-      <div class="sidebar-item" data-action="switchPanel" data-panel="profile">
+      <div class="sidebar-item" onclick="w('switchPanel','profile')">
         <span class="item-icon">👤</span>
         <span class="item-label">Profile</span>
       </div>
@@ -1124,7 +1186,7 @@ body::after{
             <button class="tool-btn" onclick="showToast('🌐 Web search enabled!')">🌐 Web</button>
             <button class="tool-btn" onclick="showToast('📊 Data mode activated!')">📊 Data</button>
             <button class="tool-btn" onclick="showToast('🔣 Code mode activated!')">🔣 Code</button>
-            <button class="tool-btn" data-action="clearChat">🗑 Clear</button>
+            <button class="tool-btn" onclick="w('clearChat')">🗑 Clear</button>
           </div>
           <div class="voice-viz" id="voiceViz">
             <div class="vbar"></div><div class="vbar"></div><div class="vbar"></div>
@@ -1134,7 +1196,7 @@ body::after{
           <div class="input-row">
             <textarea class="chat-textarea" id="chatInput" placeholder="Type your message to Exbotz..." rows="1"
               onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-            <button class="send-btn" id="btnSend">▶</button>
+            <button class="send-btn" id="btnSend" onclick="w('sendMsg')">▶</button>
           </div>
           <div class="input-hint">PRESS ENTER TO SEND · SHIFT+ENTER FOR NEW LINE · CRAFTED BY DhooLiaa</div>
         </div>
@@ -1177,7 +1239,7 @@ body::after{
               </div>
             </div>
 
-            <button class="btn-primary" id="btnGenerate" style="width:auto;max-width:200px;clip-path:none">
+            <button class="btn-primary" id="btnGenerate" onclick="w('genImg')" style="width:auto;max-width:200px;clip-path:none">
               ▶ GENERATE IMAGE
             </button>
           </div>
@@ -1187,6 +1249,66 @@ body::after{
               <div style="font-size:40px;margin-bottom:12px">🎨</div>
               ENTER A PROMPT AND CLICK GENERATE<br>
               <span style="font-size:6px;color:#333;font-family:var(--pixel)">YOUR PIXEL ART AWAITS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ADMIN PANEL ===== -->
+      <div class="panel" id="panel-admin" style="display:none">
+        <div class="admin-panel">
+          <div style="font-family:var(--pixel);font-size:10px;color:var(--pk1);margin-bottom:16px">🛡 ADMIN CONTROL CENTER</div>
+
+          <!-- Stats -->
+          <div class="admin-stat-grid">
+            <div class="admin-stat">
+              <div class="admin-stat-num" id="adminTotalUsers">0</div>
+              <div class="admin-stat-label">TOTAL USERS</div>
+            </div>
+            <div class="admin-stat">
+              <div class="admin-stat-num" id="adminTotalMsgs">0</div>
+              <div class="admin-stat-label">TOTAL MSGS</div>
+            </div>
+            <div class="admin-stat">
+              <div class="admin-stat-num" id="adminOnline">1</div>
+              <div class="admin-stat-label">ONLINE NOW</div>
+            </div>
+          </div>
+
+          <!-- Broadcast -->
+          <div class="admin-section">
+            <div class="admin-section-title">📢 BROADCAST MESSAGE</div>
+            <input class="admin-input" id="broadcastMsg" placeholder="Pesan untuk semua user...">
+            <button class="admin-btn admin-btn-pk" onclick="adminBroadcast()">▶ KIRIM BROADCAST</button>
+          </div>
+
+          <!-- User Management -->
+          <div class="admin-section">
+            <div class="admin-section-title">👥 USER MANAGEMENT</div>
+            <div id="adminUserList" style="overflow-x:auto">
+              <table class="admin-table">
+                <thead><tr><th>USER</th><th>EMAIL</th><th>ROLE</th><th>AKSI</th></tr></thead>
+                <tbody id="adminUserTableBody">
+                  <tr><td colspan="4" style="color:#555;text-align:center">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- System Settings -->
+          <div class="admin-section">
+            <div class="admin-section-title">⚙ SYSTEM SETTINGS</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <button class="admin-btn admin-btn-bl" onclick="adminExportData()">⬇ EXPORT DATA</button>
+              <button class="admin-btn admin-btn-red" onclick="adminClearLogs()">🗑 CLEAR LOGS</button>
+            </div>
+          </div>
+
+          <!-- Activity Log -->
+          <div class="admin-section">
+            <div class="admin-section-title">📋 ACTIVITY LOG</div>
+            <div class="admin-log" id="adminLog">
+              <div class="admin-log-item">[ SYSTEM ] Admin panel initialized</div>
             </div>
           </div>
         </div>
@@ -1438,9 +1560,9 @@ body::after{
 </div><!-- end mainApp -->
 
 <!-- ===== MODALS ===== -->
-<div class="modal-overlay" id="shortcutsModal" data-action="closeModal" data-id="'shortcutsModal')">
+<div class="modal-overlay" id="shortcutsModal" onclick="w('closeModal','shortcutsModal')">
   <div class="modal" onclick="event.stopPropagation()">
-    <button class="modal-close" data-action="closeModal" data-id="'shortcutsModal')">×</button>
+    <button class="modal-close" onclick="w('closeModal','shortcutsModal')">×</button>
     <div class="modal-title">⌨ KEYBOARD SHORTCUTS</div>
     <div style="display:flex;flex-direction:column;gap:10px;font-family:var(--mono);font-size:13px">
       <div class="setting-row"><span>Send Message</span><span style="color:var(--bl1);font-family:var(--pixel);font-size:8px">ENTER</span></div>
@@ -1454,9 +1576,9 @@ body::after{
 </div>
 
 <!-- ===== EDIT PROFILE MODAL ===== -->
-<div class="modal-overlay" id="editProfileModal" data-action="closeModal" data-id="'editProfileModal')">
+<div class="modal-overlay" id="editProfileModal" onclick="w('closeModal','editProfileModal')">
   <div class="modal" onclick="event.stopPropagation()" style="width:380px">
-    <button class="modal-close" data-action="closeModal" data-id="'editProfileModal')">×</button>
+    <button class="modal-close" onclick="w('closeModal','editProfileModal')">×</button>
     <div class="modal-title">✏ EDIT PROFILE</div>
 
     <!-- Photo Preview in modal -->
@@ -1520,9 +1642,9 @@ body::after{
   </div>
 </div>
 
-<div class="modal-overlay" id="toolModal" data-action="closeModal" data-id="'toolModal')">
+<div class="modal-overlay" id="toolModal" onclick="w('closeModal','toolModal')">
   <div class="modal" onclick="event.stopPropagation()">
-    <button class="modal-close" data-action="closeModal" data-id="'toolModal')">×</button>
+    <button class="modal-close" onclick="w('closeModal','toolModal')">×</button>
     <div class="modal-title" id="toolModalTitle">TOOL</div>
     <div id="toolModalContent"></div>
   </div>
@@ -1546,6 +1668,102 @@ body::after{
     }
   }catch(e){}
 })();
+
+
+// ═══════════════════════════════
+// ADMIN PANEL
+// Admin account: admin@exbotz.com / Admin123!
+// ═══════════════════════════════
+
+const ADMIN_EMAIL = 'admin@exbotz.com';
+const ADMIN_PASS  = 'Admin123!';
+const ADMIN_NAME  = 'ADMIN';
+
+// Fake user database for admin view
+let adminUsers = [
+  { id:1, name:'ADMIN', email:'admin@exbotz.com', role:'admin', msgs:0 },
+];
+
+function isAdmin() {
+  return currentUser && currentUser.email === ADMIN_EMAIL;
+}
+
+function initAdminPanel() {
+  if (!isAdmin()) return;
+  // Show admin nav
+  const nav = document.getElementById('adminNavItem');
+  if (nav) nav.style.display = '';
+
+  // Update stats
+  document.getElementById('adminTotalUsers').textContent = adminUsers.length;
+  document.getElementById('adminTotalMsgs').textContent = messageCount;
+
+  // Populate user table
+  const tbody = document.getElementById('adminUserTableBody');
+  if (tbody) {
+    tbody.innerHTML = adminUsers.map(u => `
+      <tr>
+        <td>${u.name}</td>
+        <td style="color:#888;font-size:11px">${u.email}</td>
+        <td><span class="admin-badge ${u.role==='admin'?'badge-admin':'badge-user'}">${u.role.toUpperCase()}</span></td>
+        <td>
+          <button class="admin-btn admin-btn-red" style="font-size:6px;padding:4px 8px" onclick="adminBanUser('${u.email}')">BAN</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+  adminLog('Admin panel loaded', 'info');
+}
+
+function adminLog(msg, type='info') {
+  const log = document.getElementById('adminLog');
+  if (!log) return;
+  const item = document.createElement('div');
+  item.className = 'admin-log-item' + (type==='warn'?' warn':type==='err'?' err':'');
+  item.textContent = '[ ' + new Date().toLocaleTimeString() + ' ] ' + msg;
+  log.insertBefore(item, log.firstChild);
+}
+
+function adminBroadcast() {
+  const msg = document.getElementById('broadcastMsg').value.trim();
+  if (!msg) { showToast('⚠ Tulis pesan broadcast!'); return; }
+  showToast('📢 Broadcast terkirim: ' + msg.slice(0,30));
+  adminLog('Broadcast sent: ' + msg, 'warn');
+  document.getElementById('broadcastMsg').value = '';
+}
+
+function adminBanUser(email) {
+  if (email === ADMIN_EMAIL) { showToast('⚠ Tidak bisa ban diri sendiri!'); return; }
+  adminUsers = adminUsers.filter(u => u.email !== email);
+  showToast('🚫 User ' + email + ' dibanned!');
+  adminLog('Banned user: ' + email, 'warn');
+  initAdminPanel();
+}
+
+function adminExportData() {
+  const data = JSON.stringify({ users: adminUsers, exported: new Date().toISOString() }, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'exbotz-admin-export.json';
+  a.click();
+  adminLog('Data exported', 'info');
+  showToast('✅ Data exported!');
+}
+
+function adminClearLogs() {
+  const log = document.getElementById('adminLog');
+  if (log) log.innerHTML = '<div class="admin-log-item">[ SYSTEM ] Logs cleared</div>';
+  showToast('✅ Logs cleared!');
+}
+
+// Track new users when they login
+function trackUser(name, email) {
+  if (!adminUsers.find(u => u.email === email)) {
+    adminUsers.push({ id: adminUsers.length+1, name, email, role:'user', msgs:0 });
+    document.getElementById('adminTotalUsers').textContent = adminUsers.length;
+  }
+}
 
 // Expose all functions globally (fix untuk browser/hosting)
 window.switchTab=switchTab;
@@ -1690,6 +1908,8 @@ function loginSuccess(name, email) {
   document.getElementById('mainApp').style.display = 'flex';
   document.getElementById('profileName').textContent = displayName;
   document.getElementById('profileEmail').textContent = email;
+  trackUser(displayName, email);
+  setTimeout(initAdminPanel, 300);
 
   // Set avatar in topbar
   updateAllAvatars(displayName, currentUser.avatarUrl);
@@ -1856,7 +2076,7 @@ function switchPanel(name) {
   document.getElementById('panel-' + name).classList.add('active');
   document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
 
-  const icons = {chat:'💬',imagine:'🎨',tools:'🛠',history:'📜',settings:'⚙️',profile:'👤'};
+  const icons = {chat:'💬',imagine:'🎨',tools:'🛠',history:'📜',settings:'⚙️',profile:'👤',admin:'🛡'};
   document.querySelectorAll('.sidebar-item').forEach(s => {
     if (s.querySelector('.item-icon')?.textContent === icons[name]) s.classList.add('active');
   });
@@ -2268,7 +2488,7 @@ function generateImage() {
       <div style="font-size:12px;color:#666;margin-top:4px">"${prompt.slice(0,40)}..."</div>
       <div style="display:flex;gap:8px;margin-top:12px">
         <button class="top-btn" onclick="showToast('💾 Image saved!')">💾 Save</button>
-        <button class="top-btn" id="btnGenerate">🔄 Regenerate</button>
+        <button class="top-btn" id="btnGenerate" onclick="w('genImg')">🔄 Regenerate</button>
         <button class="top-btn" onclick="showToast('📋 Copied!')">📋 Copy</button>
       </div>`;
   }, 2500);
@@ -2353,10 +2573,7 @@ function openTool(name) {
   openModal('toolModal');
 }
 function closeTool() {
-  const modal = document.getElementById('toolModal');
-  if (modal) modal.style.display = 'none';
-  const overlay = document.getElementById('toolModalOverlay');
-  if (overlay) overlay.style.display = 'none';
+  closeModal('toolModal');
 }
 
 function showModal(id) {
@@ -2365,14 +2582,26 @@ function showModal(id) {
 }
 
 function closeModal(id) {
-  const el = document.getElementById(id);
-  if (el) el.style.display = 'none';
+  // Clean the id in case it has extra chars
+  const cleanId = id ? id.replace(/['"()]/g,'').trim() : '';
+  const el = document.getElementById(cleanId);
+  if (el) {
+    el.classList.remove('show');
+    el.style.display = 'none';
+  }
 }
 
 
 
 // MODAL
-function openModal(id) { document.getElementById(id).classList.add('show'); }
+function openModal(id) {
+  const cleanId = id ? id.replace(/['"()]/g,'').trim() : '';
+  const el = document.getElementById(cleanId);
+  if (el) {
+    el.classList.add('show');
+    el.style.display = 'flex';
+  }
+}
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
 // MODE
@@ -2459,21 +2688,7 @@ document.addEventListener('keydown', (e) => {
 
 
 
-// EVENT DELEGATION — works even when Cloudflare breaks inline handlers
-document.addEventListener('click', function(e) {
-  const t = e.target.closest('[data-action]') || e.target;
-  const action = t.getAttribute ? t.getAttribute('data-action') : null;
-  
-  if (action === 'switchTab') { switchTab(t.getAttribute('data-tab')); return; }
-  if (action === 'googleLogin') { doGoogleLogin(); return; }
-  if (action === 'toggleSidebar') { toggleSidebar(); return; }
-  if (action === 'closeSidebar') { closeSidebar(); return; }
-  if (action === 'closeTool') { closeTool(); return; }
-  if (action === 'closeModal') { closeModal(t.getAttribute('data-id')); return; }
-  if (action === 'newChat') { newChat(); return; }
-  if (action === 'clearChat') { clearChat(); return; }
-  if (action === 'switchPanel') { switchPanel(t.getAttribute('data-panel')); return; }
-});
+// Event handlers via w() dispatcher above
 
 // Bind specific buttons by ID
 document.addEventListener('DOMContentLoaded', function() {
@@ -2511,4 +2726,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </script>
 </body>
-   </html>
+  </html>
