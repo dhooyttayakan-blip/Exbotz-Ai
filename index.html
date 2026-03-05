@@ -840,7 +840,7 @@ async function loadConfig(){
       SUPABASE_URL = d.supabaseUrl || '';
       SUPABASE_KEY = d.supabaseKey || '';
     }
-  }catch(e){ console.log('Mode demo aktif'); }
+  }catch(e){ console.log('Config load error:', e); }
 }
 
 // ── STATE ──
@@ -960,7 +960,6 @@ async function doLogin(){
     });
     const data=await res.json();
     pgEnd(pg);
-    if(data.demo){demoLogin(email);return;}
     if(data.error){toast('⚠ '+(data.error||'Login gagal! Cek email & password.'));return;}
     user={
       id: data.id||'u-'+Date.now(),
@@ -973,14 +972,13 @@ async function doLogin(){
     enterApp();
   }catch(e){
     pgEnd(pg);
-    demoLogin(email);
+    toast('⚠ Koneksi gagal. Cek internet dan coba lagi!');
   }
 }
 
 function demoLogin(email){
-  user={id:'demo-'+Date.now(),name:email.split('@')[0].toUpperCase(),email,tokens:50,level:1,exp:0,isPremium:false,isAdmin:email.includes('admin')};
-  toast('✓ Login berhasil! (Mode Demo)');
-  enterApp();
+  // Demo mode dihapus - tampilkan error
+  toast('⚠ Login gagal! Cek email & password, atau daftar dulu.');
 }
 
 async function loadUserProfile(token, uid){
@@ -1017,17 +1015,12 @@ async function doRegister(){
     });
     const data=await res.json();
     pgEnd(pg);
-    if(data.demo){
-      user={id:'demo-'+Date.now(),name:name.toUpperCase(),email,tokens:50,level:1,exp:0,isPremium:false,isAdmin:false};
-      toast('✓ Akun dibuat! (Mode Demo)');
-      setTimeout(()=>enterApp(),700);
-      return;
-    }
+
     if(data.error){toast('⚠ '+(data.error||'Register gagal. Email mungkin sudah dipakai!'));return;}
     user={id:data.id||'u-'+Date.now(),name:name.toUpperCase(),email,tokens:50,level:1,exp:0,isPremium:false,isAdmin:false};
     toast('✓ Akun berhasil dibuat! Token awal: 50 🪙');
     setTimeout(()=>enterApp(),700);
-  }catch(e){pgEnd(pg);user={id:'demo-'+Date.now(),name:name.toUpperCase(),email,tokens:50,level:1,exp:0,isPremium:false,isAdmin:false};toast('✓ Akun dibuat! (Mode Demo)');setTimeout(()=>enterApp(),700);}
+  }catch(e){pgEnd(pg);toast('⚠ Register gagal. Cek koneksi internet!');}
 }
 function getStoredOTP(email){return '123456';}// In prod: check DB
 
@@ -1260,9 +1253,10 @@ async function sendMsg(){
   const txt=inp.value.trim();
   if(!txt&&!uploadedFile)return;
   if(isTyping)return;
+  if(!user){toast('⚠ Login dulu untuk chat!');return;}
   // Token cost
   const cost=activeTools.img?3:activeTools.mai?5:1;
-  if(!user?.isPremium&&!useToken(cost))return;
+  if(!user.isPremium&&!useToken(cost))return;
 
   const wd=document.getElementById('welcomeDiv');
   if(wd)wd.remove();
@@ -1338,7 +1332,7 @@ async function callAI(txt, sysOverride=null){
     throw new Error('no_response');
   }catch(e){
     console.warn('AI error:', e.message);
-    activeEngine = 'demo';
+    activeEngine = 'error';
     return demoReply(txt);
   }
 }
@@ -1349,8 +1343,8 @@ async function callClaude(txt){ return callAI(txt); }
 function updateEngineBadge(){
   const b=document.getElementById('engineBadge');
   if(!b)return;
-  const labels={groq:'⚡ GROQ',gemini:'🌟 GEMINI',openrouter:'🔁 OPENROUTER',demo:'🎮 DEMO'};
-  const colors={groq:'var(--green)',gemini:'var(--blue)',openrouter:'var(--yellow)',demo:'var(--dim)'};
+  const labels={groq:'⚡ GROQ',gemini:'🌟 GEMINI',openrouter:'🔁 OPENROUTER'};
+  const colors={groq:'var(--green)',gemini:'var(--blue)',openrouter:'var(--yellow)'};
   b.textContent=labels[activeEngine]||'⚡ AI';
   b.style.borderColor=colors[activeEngine]||'var(--green)';
   b.style.color=colors[activeEngine]||'var(--green)';
@@ -1358,7 +1352,7 @@ function updateEngineBadge(){
 }
 
 function demoReply(txt){
-  return `Halo! Saya **Exbotz** 🤖 buatan **pinlyy**!\n\nSaat ini berjalan di **Mode Demo** karena API key belum diisi.\n\n**Cara aktivasi gratis:**\n1. Daftar di https://console.groq.com\n2. Buat API key gratis\n3. Isi \`GROQ_KEY\` di bagian CONFIG kode\n\n✨ Groq gratis **14.400 request/hari** selamanya!`;
+  return '⚠ AI tidak tersedia saat ini. Pastikan GROQ_KEY sudah diisi di Vercel Environment Variables.';
 }
 
 async function sendMultiAI(txt){
@@ -1645,4 +1639,4 @@ window.sendOTP=sendOTP;
 
 </script>
 </body>
-  </html>
+   </html>
