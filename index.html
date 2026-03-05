@@ -2,1847 +2,2513 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
-<title>Exbotz AI — by pinlyy</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exbotz AI — by DhooLoppLiaa</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════
-   EXBOTZ AI - PIXEL ART THEME
-   Pink & Blue | by pinlyy
-═══════════════════════════════════════════ */
 :root {
-  --pink:#ff2d78;--pink2:#ff6eb4;--pink3:#ffd6eb;
-  --blue:#00f5ff;--blue2:#0099cc;--blue3:#003366;
-  --purple:#aa00ff;--green:#00ff88;--yellow:#ffff00;
-  --bg:#08001a;--bg2:#0d0022;--bg3:#12003a;
-  --card:#140030;--card2:#1e0050;
-  --border:#ff2d7833;--border2:#00f5ff22;
-  --text:#fff;--dim:#aa88bb;
-  --gp:0 0 8px #ff2d78,0 0 20px #ff2d7855;
-  --gb:0 0 8px #00f5ff,0 0 20px #00f5ff55;
-  --gg:0 0 8px #00ff88,0 0 20px #00ff8855;
-  --font:'Press Start 2P',monospace;
-  --vt:'VT323',monospace;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{height:100%;overflow:hidden;}
-body{font-family:var(--vt);background:var(--bg);color:var(--text);cursor:crosshair;}
-/* Fix mobile: input area selalu terlihat saat keyboard muncul */
-@supports (height: 100dvh){
-  html,body{height:100dvh;}
-  #appS{height:100dvh;}
+  --pk1:#ff2d9b;--pk2:#ff6ec7;--pk3:#ffb3e6;--pk4:#3d0026;
+  --bl1:#00c8ff;--bl2:#0070ff;--bl3:#7fd9ff;--bl4:#001a3d;
+  --dark:#07000f;--dark2:#0e0020;--dark3:#160030;
+  --card:rgba(20,0,40,0.92);
+  --border-pk:rgba(255,45,155,0.5);
+  --border-bl:rgba(0,200,255,0.5);
+  --glow-pk:0 0 10px #ff2d9baa,0 0 30px #ff2d9b55,0 0 60px #ff2d9b22;
+  --glow-bl:0 0 10px #00c8ffaa,0 0 30px #00c8ff55,0 0 60px #00c8ff22;
+  --pixel:'Press Start 2P';
+  --mono:'Share Tech Mono';
+  --vt:'VT323';
 }
 
-/* ── Pixel Grid ── */
-body::before{content:'';position:fixed;inset:0;
-  background-image:linear-gradient(#ff2d7806 1px,transparent 1px),linear-gradient(90deg,#ff2d7806 1px,transparent 1px);
-  background-size:24px 24px;pointer-events:none;z-index:0;}
-body::after{content:'';position:fixed;inset:0;
-  background:radial-gradient(ellipse 80% 50% at 50% 0%,#ff2d7818,transparent 70%),
-             radial-gradient(ellipse 50% 40% at 100% 100%,#00f5ff0a,transparent 60%);
-  pointer-events:none;z-index:0;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
 
-/* ── Scanlines ── */
-.scan{position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.07) 3px,rgba(0,0,0,.07) 4px);pointer-events:none;z-index:9999;}
+body {
+  background:var(--dark);
+  color:#fff;
+  font-family:var(--mono);
+  position:relative;
+}
 
-/* ── Canvas Particles ── */
-#px{position:fixed;inset:0;pointer-events:none;z-index:1;}
+/* ANIMATED PIXEL GRID BG */
+.bg-grid {
+  position:fixed;inset:0;z-index:0;
+  background-image:
+    linear-gradient(rgba(255,45,155,0.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,200,255,0.07) 1px,transparent 1px);
+  background-size:24px 24px;
+  animation:gridScroll 20s linear infinite;
+}
+@keyframes gridScroll{to{background-position:24px 24px}}
 
-/* ════ SCREENS ════ */
-.screen{display:none;position:relative;z-index:10;height:100vh;}
-.screen.on{display:flex;}
+/* FLOATING PIXELS */
+.pixel-rain{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.px{position:absolute;width:4px;height:4px;animation:fall linear infinite}
+@keyframes fall{0%{transform:translateY(-10px);opacity:1}100%{transform:translateY(100vh);opacity:0}}
 
-/* ════ PROGRESS BAR ════ */
-#pgbar{position:fixed;top:0;left:0;right:0;height:3px;z-index:99999;display:none;}
-#pgfill{height:100%;width:0%;background:linear-gradient(90deg,var(--pink),var(--blue),var(--pink));background-size:200%;animation:flowBg 1s linear infinite;transition:width .2s;}
-@keyframes flowBg{0%{background-position:0%}100%{background-position:200%}}
+/* SCANLINES */
+body::after{
+  content:'';position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.08) 2px,rgba(0,0,0,0.08) 4px);
+}
 
-/* ════ TOAST ════ */
-#toast{position:fixed;bottom:70px;right:20px;background:var(--card);border:2px solid var(--pink);color:#fff;font-family:var(--font);font-size:7px;padding:10px 14px;box-shadow:var(--gp);z-index:99998;transform:translateX(130%);transition:transform .3s;letter-spacing:1px;max-width:250px;line-height:1.6;}
-#toast.on{transform:translateX(0);}
+/* ===== AUTH SCREEN ===== */
+#authScreen {
+  position:fixed;inset:0;z-index:100;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--dark);
+}
 
-/* ════ AUTH SCREEN ════ */
-#authS{flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:20px;overflow-y:auto;}
+.auth-container {
+  position:relative;z-index:2;
+  width:420px;max-width:95vw;
+  background:var(--card);
+  border:2px solid var(--pk1);
+  box-shadow:var(--glow-pk),inset 0 0 40px rgba(255,45,155,0.05);
+  animation:fadeIn .5s ease;
+  image-rendering:pixelated;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
-.logo-wrap{text-align:center;animation:bob 3s ease-in-out infinite;}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.auth-header {
+  background:linear-gradient(135deg,var(--pk4),var(--bl4));
+  border-bottom:2px solid var(--pk1);
+  padding:24px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.auth-header::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(255,45,155,0.05) 4px,rgba(255,45,155,0.05) 8px);
+}
 
-.pixel-bot{display:block;margin:0 auto 12px;filter:drop-shadow(0 0 12px var(--pink)) drop-shadow(0 0 28px var(--blue));}
+.logo-pixel {
+  font-family:var(--pixel);
+  font-size:22px;
+  color:var(--pk1);
+  text-shadow:var(--glow-pk);
+  letter-spacing:2px;
+  position:relative;z-index:1;
+  animation:blink 2s step-end infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.7}}
 
-.logo-title{font-family:var(--font);font-size:clamp(18px,4vw,28px);background:linear-gradient(90deg,var(--pink),var(--blue),var(--pink));background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:flowBg 3s linear infinite;letter-spacing:3px;}
-.logo-sub{font-size:18px;color:var(--blue);text-shadow:var(--gb);letter-spacing:3px;margin-top:6px;}
+.logo-sub {
+  font-family:var(--vt);
+  font-size:20px;color:var(--bl1);
+  letter-spacing:4px;margin-top:6px;
+  position:relative;z-index:1;
+}
 
-/* Auth Card */
-.auth-card{background:var(--card);border:2px solid var(--pink);box-shadow:var(--gp),inset 0 0 40px #ff2d7806;width:100%;max-width:420px;position:relative;}
-.auth-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--pink),var(--blue),var(--pink));background-size:200%;animation:flowBg 2s linear infinite;}
+.pixel-bot-icon {
+  width:60px;height:60px;margin:0 auto 12px;
+  position:relative;z-index:1;
+  image-rendering:pixelated;
+}
 
-.auth-tabs{display:flex;}
-.atab{flex:1;font-family:var(--font);font-size:8px;padding:12px;border:none;background:transparent;color:var(--dim);cursor:pointer;transition:.2s;letter-spacing:1px;border-bottom:2px solid var(--border);}
-.atab.on{background:var(--pink);color:#fff;text-shadow:0 0 8px #fff;border-bottom-color:var(--pink);}
+/* PIXEL BOT SVG */
+.bot-face {
+  width:60px;height:60px;
+  display:block;margin:0 auto;
+}
 
-.auth-body{padding:28px;}
-.fpanel{display:none;}
-.fpanel.on{display:block;}
+.auth-tabs {
+  display:flex;border-bottom:2px solid var(--border-pk);
+}
+.auth-tab {
+  flex:1;padding:12px;text-align:center;
+  font-family:var(--pixel);font-size:8px;
+  color:#888;cursor:pointer;
+  transition:.2s;border-bottom:3px solid transparent;
+  letter-spacing:1px;
+}
+.auth-tab.active{color:var(--pk1);border-bottom-color:var(--pk1);text-shadow:var(--glow-pk)}
+.auth-tab:hover:not(.active){color:var(--pk3)}
 
-.ftitle{font-family:var(--font);font-size:10px;color:var(--pink);text-shadow:var(--gp);margin-bottom:20px;text-align:center;letter-spacing:2px;}
+.auth-body{padding:28px}
 
-.fg{margin-bottom:14px;}
-.fg label{display:block;font-family:var(--font);font-size:7px;color:var(--blue);margin-bottom:7px;letter-spacing:1px;}
-.px-in{width:100%;background:var(--bg);border:2px solid var(--border2);color:#fff;font-family:var(--vt);font-size:18px;padding:10px 13px;outline:none;transition:.2s;letter-spacing:.5px;}
-.px-in:focus{border-color:var(--pink);box-shadow:var(--gp);background:#1a0033;}
-.px-in::placeholder{color:#ffffff33;}
+.form-group{margin-bottom:18px}
+.form-label{
+  font-family:var(--pixel);font-size:7px;
+  color:var(--bl1);letter-spacing:1px;
+  display:block;margin-bottom:8px;
+}
 
-.otp-row{display:flex;gap:8px;}
-.otp-row .px-in{text-align:center;font-size:22px;letter-spacing:4px;}
-.otp-send-btn{font-family:var(--font);font-size:6px;background:var(--blue2);border:none;color:#fff;padding:10px;cursor:pointer;white-space:nowrap;transition:.2s;letter-spacing:1px;}
-.otp-send-btn:hover{background:var(--blue);color:#000;}
+.form-input {
+  width:100%;padding:12px 14px;
+  background:rgba(0,200,255,0.05);
+  border:2px solid var(--border-bl);
+  color:#fff;font-family:var(--mono);font-size:14px;
+  outline:none;transition:.2s;
+  image-rendering:pixelated;
+}
+.form-input:focus{
+  border-color:var(--bl1);
+  box-shadow:var(--glow-bl);
+  background:rgba(0,200,255,0.08);
+}
+.form-input::placeholder{color:#444}
 
-/* Captcha */
-.captcha-box{background:var(--bg);border:2px solid var(--border2);padding:12px;margin-bottom:14px;display:none;}
-.captcha-box.on{display:block;}
-.captcha-q{font-family:var(--font);font-size:9px;color:var(--yellow);margin-bottom:8px;letter-spacing:1px;}
+.btn-primary {
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,var(--pk1),var(--pk2));
+  color:#fff;border:none;cursor:pointer;
+  font-family:var(--pixel);font-size:9px;
+  letter-spacing:2px;
+  box-shadow:var(--glow-pk);
+  transition:.2s;position:relative;overflow:hidden;
+  clip-path:polygon(4px 0,100% 0,calc(100% - 4px) 100%,0 100%);
+}
+.btn-primary:hover{
+  background:linear-gradient(135deg,var(--pk2),var(--pk1));
+  transform:translateY(-2px);
+  box-shadow:0 0 20px #ff2d9b,0 0 40px #ff2d9b88;
+}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary::before{
+  content:'▶';position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  font-size:10px;opacity:.6;
+}
 
-.px-btn{width:100%;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;color:#fff;font-family:var(--font);font-size:8px;padding:13px;cursor:pointer;letter-spacing:2px;box-shadow:var(--gp);transition:.2s;position:relative;overflow:hidden;}
-.px-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);transition:left .5s;}
-.px-btn:hover::before{left:100%;}
-.px-btn:hover{transform:translateY(-2px);box-shadow:var(--gp),0 8px 20px #ff2d7833;}
-.px-btn.blue{background:linear-gradient(135deg,var(--blue2),var(--blue3));box-shadow:var(--gb);}
-.px-btn.green{background:linear-gradient(135deg,#00aa55,#005522);box-shadow:var(--gg);}
+.btn-google {
+  width:100%;padding:12px;
+  background:rgba(255,255,255,0.05);
+  border:2px solid rgba(255,255,255,0.2);
+  color:#fff;cursor:pointer;
+  font-family:var(--mono);font-size:13px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:.2s;margin-bottom:14px;
+}
+.btn-google:hover{border-color:var(--bl1);background:rgba(0,200,255,0.08);box-shadow:var(--glow-bl)}
 
-.g-btn{width:100%;background:var(--bg2);border:2px solid var(--border2);color:#fff;font-family:var(--font);font-size:7px;padding:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:.2s;letter-spacing:1px;margin-top:10px;}
-.g-btn:hover{border-color:var(--blue);box-shadow:var(--gb);}
+.google-icon{
+  width:20px;height:20px;
+  background:conic-gradient(from 0deg,#4285f4 0 25%,#ea4335 25% 50%,#fbbc04 50% 75%,#34a853 75%);
+  border-radius:50%;
+  clip-path:circle(50%);
+}
 
-.divider{text-align:center;margin:12px 0;font-family:var(--font);font-size:7px;color:var(--dim);position:relative;}
-.divider::before,.divider::after{content:'';position:absolute;top:50%;width:35%;height:1px;background:var(--border2);}
-.divider::before{left:0}.divider::after{right:0}
+.divider{
+  display:flex;align-items:center;gap:10px;
+  margin:16px 0;color:#444;font-size:12px;
+}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border-pk)}
 
-.swlink{font-family:var(--font);font-size:7px;color:var(--blue);cursor:pointer;text-decoration:underline;text-shadow:var(--gb);}
-.switch-auth{text-align:center;margin-top:16px;font-family:var(--font);font-size:7px;color:var(--dim);}
-.forgot-row{text-align:right;margin-bottom:10px;}<br>
-.forgot-row a{font-family:var(--font);font-size:6px;color:var(--blue);cursor:pointer;text-shadow:var(--gb);}
+.link-btn{
+  background:none;border:none;color:var(--pk2);cursor:pointer;
+  font-family:var(--mono);font-size:12px;text-decoration:underline;
+}
+.link-btn:hover{color:var(--pk1);text-shadow:var(--glow-pk)}
 
-/* pcorners */
-.pc{position:absolute;width:10px;height:10px;}
-.pc.tl{top:0;left:0;border-top:3px solid var(--blue);border-left:3px solid var(--blue);}
-.pc.tr{top:0;right:0;border-top:3px solid var(--blue);border-right:3px solid var(--blue);}
-.pc.bl{bottom:0;left:0;border-bottom:3px solid var(--blue);border-left:3px solid var(--blue);}
-.pc.br{bottom:0;right:0;border-bottom:3px solid var(--blue);border-right:3px solid var(--blue);}
+.auth-footer{text-align:center;margin-top:14px;font-size:11px;color:#555}
 
-/* ════ APP SCREEN ════ */
-#appS{flex-direction:row;height:100vh;overflow:hidden;}
+.credit-badge {
+  text-align:center;padding:10px;
+  border-top:1px solid var(--border-pk);
+  font-family:var(--pixel);font-size:6px;
+  color:#333;letter-spacing:2px;
+}
+.credit-badge span{color:var(--pk1)}
 
-/* ── Sidebar ── */
-.sb{width:260px;min-width:260px;background:var(--card);border-right:2px solid var(--pink);display:flex;flex-direction:column;height:100vh;transition:width .3s,min-width .3s;z-index:100;overflow:hidden;}
-.sb.col{width:56px;min-width:56px;}
+/* FORGOT PW FORM */
+.forgot-form{display:none}
+.back-btn{
+  background:none;border:none;color:var(--bl1);cursor:pointer;
+  font-family:var(--pixel);font-size:7px;
+  display:flex;align-items:center;gap:6px;margin-bottom:16px;
+}
+.back-btn:hover{color:var(--bl3)}
 
-.sb-hd{padding:14px 12px;border-bottom:2px solid var(--border);background:var(--bg2);display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.sb-logo{font-family:var(--font);font-size:9px;background:linear-gradient(90deg,var(--pink),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;}
-.sb-tog{margin-left:auto;background:none;border:1px solid var(--border2);color:var(--blue);cursor:pointer;padding:4px 7px;font-size:13px;transition:.2s;flex-shrink:0;}
-.sb-tog:hover{border-color:var(--pink);color:var(--pink);}
+/* ===== MAIN APP ===== */
+#mainApp{
+  display:none;
+  height:100vh;
+  flex-direction:column;
+  position:relative;z-index:2;
+}
 
-.nchat-btn{margin:10px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;color:#fff;font-family:var(--font);font-size:7px;padding:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:var(--gp);transition:.2s;letter-spacing:1px;white-space:nowrap;overflow:hidden;}
-.nchat-btn:hover{transform:translateY(-2px);}
+/* TOPBAR */
+.topbar {
+  height:60px;
+  background:linear-gradient(135deg,var(--dark2),var(--dark3));
+  border-bottom:2px solid var(--pk1);
+  display:flex;align-items:center;padding:0 16px;gap:12px;
+  box-shadow:0 2px 20px rgba(255,45,155,0.3);
+  position:relative;z-index:10;flex-shrink:0;
+}
 
-.sb-sec{padding:6px 12px 3px;font-family:var(--font);font-size:6px;color:var(--dim);letter-spacing:2px;white-space:nowrap;overflow:hidden;}
+.topbar-logo {
+  font-family:var(--pixel);font-size:13px;
+  color:var(--pk1);text-shadow:var(--glow-pk);
+  letter-spacing:2px;white-space:nowrap;
+}
+.topbar-logo span{color:var(--bl1);text-shadow:var(--glow-bl)}
 
-/* Tabs in sidebar */
-.sb-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;}
-.stab{flex:1;font-family:var(--font);font-size:6px;padding:8px 4px;border:none;background:transparent;color:var(--dim);cursor:pointer;transition:.2s;letter-spacing:.5px;}
-.stab.on{color:var(--pink);border-bottom:2px solid var(--pink);}
+.status-dot {
+  width:8px;height:8px;background:#00ff88;
+  box-shadow:0 0 8px #00ff88;
+  animation:pulse2 1.5s infinite;flex-shrink:0;
+}
+@keyframes pulse2{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 
-/* Chat history */
-.ch-list{flex:1;overflow-y:auto;padding:4px 6px;}
-.ch-list::-webkit-scrollbar{width:3px;}
-.ch-list::-webkit-scrollbar-thumb{background:var(--pink);}
-.ch-item{padding:8px 10px;margin-bottom:3px;cursor:pointer;border:1px solid transparent;transition:.2s;display:flex;align-items:center;gap:7px;overflow:hidden;}
-.ch-item:hover,.ch-item.on{background:#ff2d7810;border-color:var(--pink);}
-.ch-icon{font-size:13px;flex-shrink:0;}
-.ch-txt{font-size:15px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.ch-item.on .ch-txt{color:var(--pink);}
+.topbar-status{font-family:var(--pixel);font-size:6px;color:#00ff88;white-space:nowrap}
 
-/* Global chat in sidebar */
-.gc-list{flex:1;overflow-y:auto;padding:6px;}
-.gc-msg{padding:8px;margin-bottom:6px;background:var(--bg2);border-left:2px solid var(--pink);font-size:15px;line-height:1.4;}
-.gc-msg.other{border-left-color:var(--blue);}
-.gc-user{font-family:var(--font);font-size:6px;color:var(--pink);margin-bottom:3px;}
-.gc-msg.other .gc-user{color:var(--blue);}
-.gc-time{font-size:12px;color:var(--dim);}
-.gc-online{display:flex;align-items:center;gap:6px;padding:8px 10px;font-family:var(--font);font-size:6px;color:var(--green);border-bottom:1px solid var(--border);flex-shrink:0;}
-.odot{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:var(--gg);animation:blink 1.5s infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.gc-input-wrap{padding:8px;border-top:1px solid var(--border);display:flex;gap:6px;flex-shrink:0;}
-.gc-in{flex:1;background:var(--bg);border:1px solid var(--border2);color:#fff;font-family:var(--vt);font-size:17px;padding:7px;outline:none;}
-.gc-in:focus{border-color:var(--pink);}
-.gc-send{background:var(--pink);border:none;color:#fff;padding:7px 10px;cursor:pointer;font-size:14px;transition:.2s;}
-.gc-send:hover{background:var(--pink2);}
+.topbar-spacer{flex:1}
 
-/* Tools panel */
-.tools-grid{padding:8px;display:grid;grid-template-columns:1fr 1fr;gap:5px;overflow-y:auto;flex:1;}
-.tbtn{background:var(--bg2);border:1px solid var(--border2);color:var(--dim);font-family:var(--font);font-size:5px;padding:8px 5px;cursor:pointer;text-align:center;transition:.2s;display:flex;flex-direction:column;align-items:center;gap:4px;letter-spacing:.3px;}
-.tbtn:hover{border-color:var(--pink);color:var(--pink);background:#ff2d7808;}
-.tbtn.on{border-color:var(--blue);color:var(--blue);background:#00f5ff08;box-shadow:var(--gb);}
-.ticon{font-size:17px;}
+.topbar-btns{display:flex;gap:8px;align-items:center}
+.top-btn{
+  padding:6px 12px;
+  background:rgba(0,200,255,0.08);
+  border:1px solid var(--border-bl);
+  color:var(--bl1);cursor:pointer;
+  font-family:var(--pixel);font-size:6px;
+  transition:.2s;white-space:nowrap;
+}
+.top-btn:hover{background:rgba(0,200,255,0.2);box-shadow:var(--glow-bl)}
 
-/* User profile in sidebar */
-.sb-user{padding:10px 12px;border-top:2px solid var(--border);display:flex;align-items:center;gap:9px;cursor:pointer;background:var(--bg2);transition:.2s;overflow:hidden;flex-shrink:0;}
-.sb-user:hover{background:#ff2d7810;}
-.uav{width:34px;height:34px;background:linear-gradient(135deg,var(--pink),var(--purple));display:flex;align-items:center;justify-content:center;font-size:17px;border:2px solid var(--pink);flex-shrink:0;}
-.uname{font-family:var(--font);font-size:7px;color:var(--pink);white-space:nowrap;}
-.uplan{font-size:14px;color:var(--blue);}
-.uprem{font-size:14px;color:var(--green);}
+.user-avatar {
+  width:36px;height:36px;
+  background:linear-gradient(135deg,var(--pk1),var(--bl2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--pixel);font-size:10px;cursor:pointer;
+  border:2px solid var(--pk1);
+  box-shadow:var(--glow-pk);
+  flex-shrink:0;
+}
 
-/* Level/Token bar */
-.lvl-bar{padding:8px 12px;border-top:1px solid var(--border);flex-shrink:0;overflow:hidden;}
-.lvl-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
-.lvl-txt{font-family:var(--font);font-size:6px;color:var(--yellow);}
-.tkn-txt{font-family:var(--font);font-size:6px;color:var(--green);}
-.exp-bar{height:6px;background:var(--bg);border:1px solid var(--border2);position:relative;}
-.exp-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--purple));transition:width .5s;}
+/* LAYOUT */
+.app-layout{
+  display:flex;flex:1;overflow:hidden;
+}
 
-/* ── Main Content ── */
-.mc{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;min-width:0;}
+/* SIDEBAR */
+.sidebar {
+  width:260px;flex-shrink:0;
+  background:var(--dark2);
+  border-right:2px solid var(--border-pk);
+  display:flex;flex-direction:column;
+  transition:.3s;overflow:hidden;
+}
 
-/* Topbar */
-.topbar{padding:11px 18px;background:var(--bg2);border-bottom:2px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0;z-index:50;}
-.tb-title{font-family:var(--font);font-size:9px;color:var(--pink);text-shadow:var(--gp);}
-.tb-status{display:flex;align-items:center;gap:5px;font-size:15px;color:var(--green);}
-.tb-actions{margin-left:auto;display:flex;gap:6px;}
-.ib{background:var(--card);border:1px solid var(--border2);color:var(--blue);padding:7px 9px;cursor:pointer;font-size:15px;transition:.2s;}
-.ib:hover{border-color:var(--pink);color:var(--pink);box-shadow:var(--gp);}
-.msel{background:var(--card);border:1px solid var(--blue);color:var(--blue);font-family:var(--font);font-size:6px;padding:6px 8px;cursor:pointer;outline:none;box-shadow:var(--gb);}
-.msel option{background:var(--card);}
+.sidebar-section{
+  padding:16px 14px 8px;
+  font-family:var(--pixel);font-size:6px;
+  color:var(--pk1);letter-spacing:2px;
+  border-bottom:1px solid rgba(255,45,155,0.1);
+  text-shadow:var(--glow-pk);
+}
 
-/* Multi-AI indicator */
-.mai-bar{padding:6px 18px;background:var(--bg2);border-bottom:1px solid var(--border2);display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap;}
-.mai-badge{font-family:var(--font);font-size:5px;padding:4px 8px;border:1px solid;display:flex;align-items:center;gap:4px;}
-.mai-badge.working{border-color:var(--yellow);color:var(--yellow);animation:pulse .8s infinite;}
-.mai-badge.done{border-color:var(--green);color:var(--green);}
-.mai-badge.idle{border-color:var(--border2);color:var(--dim);}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.sidebar-item {
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;cursor:pointer;
+  transition:.2s;border-left:3px solid transparent;
+  font-size:13px;color:#aaa;
+}
+.sidebar-item:hover{
+  background:rgba(255,45,155,0.05);
+  border-left-color:var(--pk1);
+  color:var(--pk2);
+}
+.sidebar-item.active{
+  background:rgba(255,45,155,0.1);
+  border-left-color:var(--pk1);
+  color:var(--pk1);
+}
+.sidebar-item .item-icon{font-size:16px;flex-shrink:0}
+.sidebar-item .item-label{font-size:13px}
+.sidebar-badge{
+  margin-left:auto;padding:2px 6px;
+  background:var(--pk1);color:#fff;
+  font-family:var(--pixel);font-size:6px;
+  box-shadow:var(--glow-pk);
+}
 
-/* Chat area */
-.ca{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;}
-.ca::-webkit-scrollbar{width:5px;}
-.ca::-webkit-scrollbar-thumb{background:linear-gradient(var(--pink),var(--blue));}
+/* History items */
+.history-item {
+  padding:10px 14px;cursor:pointer;
+  transition:.2s;border-left:3px solid transparent;
+  font-size:12px;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.history-item:hover{border-left-color:var(--bl1);color:var(--bl1);background:rgba(0,200,255,0.05)}
 
-/* Welcome */
-.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:55vh;text-align:center;gap:18px;}
-.wart{font-size:60px;animation:bob 3s ease-in-out infinite;filter:drop-shadow(0 0 10px var(--pink)) drop-shadow(0 0 20px var(--blue));}
-.wtitle{font-family:var(--font);font-size:clamp(12px,2vw,17px);background:linear-gradient(90deg,var(--pink),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.8;}
-.wsub{font-size:20px;color:var(--dim);letter-spacing:2px;max-width:450px;}
-.sgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;width:100%;max-width:560px;}
-.sc{background:var(--card);border:1px solid var(--border);padding:13px;cursor:pointer;transition:.2s;text-align:left;}
-.sc:hover{border-color:var(--pink);box-shadow:var(--gp);background:#ff2d7808;transform:translateY(-2px);}
-.si{font-size:19px;margin-bottom:5px;}
-.st{font-family:var(--font);font-size:6px;color:var(--pink);margin-bottom:3px;}
-.sd{font-size:14px;color:var(--dim);}
+.sidebar-footer{
+  margin-top:auto;padding:14px;
+  border-top:1px solid var(--border-pk);
+}
+.token-bar{
+  background:rgba(255,45,155,0.1);
+  border:1px solid var(--border-pk);
+  height:6px;position:relative;overflow:hidden;margin-top:8px;
+}
+.token-fill{
+  height:100%;width:65%;
+  background:linear-gradient(90deg,var(--pk1),var(--bl1));
+  animation:shimmer 2s linear infinite;
+}
+@keyframes shimmer{0%{filter:brightness(1)}50%{filter:brightness(1.3)}100%{filter:brightness(1)}}
+.token-label{font-family:var(--pixel);font-size:6px;color:#555;margin-bottom:4px}
+.token-val{font-family:var(--pixel);font-size:6px;color:var(--pk1);margin-top:4px;text-align:right}
 
-/* Messages */
-.msg{display:flex;gap:10px;max-width:780px;animation:mIn .3s ease-out;}
-@keyframes mIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.msg.u{align-self:flex-end;flex-direction:row-reverse;}
-.mav{width:34px;height:34px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;border:2px solid var(--pink);background:var(--card2);}
-.msg.u .mav{border-color:var(--blue);}
-.mc2{max-width:580px;}
-.mhd{font-family:var(--font);font-size:6px;margin-bottom:5px;display:flex;gap:10px;align-items:center;}
-.mname.bot{color:var(--pink);text-shadow:var(--gp);}
-.mname.u{color:var(--blue);text-shadow:var(--gb);}
-.mtime{color:var(--dim);font-size:5px;}
-.mbub{background:var(--card);border:1px solid var(--border);padding:13px 15px;font-size:18px;line-height:1.5;letter-spacing:.3px;position:relative;}
-.msg.bot .mbub{border-color:var(--pink);box-shadow:inset 0 0 20px #ff2d7805;}
-.msg.u .mbub{background:#000c1e;border-color:var(--blue);box-shadow:var(--gb),inset 0 0 20px #00f5ff05;color:var(--blue);}
-.mbub::after{content:'';position:absolute;bottom:-1px;right:-1px;width:7px;height:7px;background:var(--pink);}
-.msg.u .mbub::after{background:var(--blue);right:auto;left:-1px;}
+/* MAIN CONTENT */
+.main-content{
+  flex:1;display:flex;flex-direction:column;overflow:hidden;
+  position:relative;
+}
 
-/* Multi AI response */
-.mai-resp{background:var(--bg2);border:1px solid var(--yellow);padding:10px;margin-top:6px;font-size:15px;}
-.mai-resp-hd{font-family:var(--font);font-size:6px;color:var(--yellow);margin-bottom:6px;}
+/* PANELS */
+.panel{display:none;flex:1;flex-direction:column;overflow:hidden}
+.panel.active{display:flex}
 
-/* Typing */
-.typing{display:flex;gap:5px;padding:13px;background:var(--card);border:1px solid var(--pink);}
-.typing span{width:7px;height:7px;background:var(--pink);animation:tb 1.4s infinite;}
-.typing span:nth-child(2){animation-delay:.2s;background:var(--purple);}
-.typing span:nth-child(3){animation-delay:.4s;background:var(--blue);}
-@keyframes tb{0%,80%,100%{transform:scaleY(1);opacity:.5}40%{transform:scaleY(1.8);opacity:1}}
+/* ===== CHAT PANEL ===== */
+.chat-mode-bar {
+  padding:10px 16px;
+  background:var(--dark2);
+  border-bottom:1px solid var(--border-bl);
+  display:flex;gap:8px;align-items:center;
+  flex-shrink:0;overflow-x:auto;
+}
+.mode-pill {
+  padding:6px 14px;
+  border:1px solid var(--border-bl);
+  color:#666;cursor:pointer;font-size:12px;
+  transition:.2s;white-space:nowrap;
+  font-family:var(--mono);
+}
+.mode-pill.active{
+  background:rgba(0,200,255,0.15);
+  border-color:var(--bl1);color:var(--bl1);
+  box-shadow:var(--glow-bl);
+}
+.mode-pill:hover:not(.active){color:var(--bl3);border-color:rgba(0,200,255,0.3)}
 
-.macts{display:flex;gap:5px;margin-top:5px;opacity:0;transition:.2s;}
-.msg:hover .macts{opacity:1;}
-.mab{background:none;border:1px solid var(--border2);color:var(--dim);font-size:11px;padding:3px 6px;cursor:pointer;transition:.2s;}
-.mab:hover{border-color:var(--pink);color:var(--pink);}
+.chat-messages {
+  flex:1;overflow-y:auto;
+  padding:20px;
+  display:flex;flex-direction:column;gap:16px;
+  scroll-behavior:smooth;
+}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-track{background:var(--dark)}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--pk1)}
 
-/* Code block */
-.code-bl{background:#040010;border:1px solid var(--blue);padding:12px;margin:7px 0;font-size:16px;color:#88ffcc;overflow-x:auto;position:relative;}
-.code-bl::before{content:'CODE';position:absolute;top:4px;right:8px;font-family:var(--font);font-size:5px;color:var(--blue);opacity:.5;}
+/* WELCOME SCREEN */
+.welcome-screen{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:40px;text-align:center;gap:20px;
+}
+.welcome-bot{
+  font-size:80px;
+  filter:drop-shadow(0 0 20px #ff2d9b);
+  animation:float 3s ease-in-out infinite;
+  image-rendering:pixelated;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.welcome-title{
+  font-family:var(--pixel);font-size:18px;
+  color:var(--pk1);text-shadow:var(--glow-pk);
+  line-height:1.8;
+}
+.welcome-sub{
+  font-family:var(--vt);font-size:22px;
+  color:var(--bl1);letter-spacing:4px;
+}
+.quick-prompts{
+  display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+  margin-top:10px;
+}
+.quick-btn {
+  padding:10px 18px;
+  background:rgba(255,45,155,0.08);
+  border:1px solid var(--border-pk);
+  color:var(--pk2);cursor:pointer;font-size:13px;
+  transition:.2s;font-family:var(--mono);
+}
+.quick-btn:hover{
+  background:rgba(255,45,155,0.15);
+  box-shadow:var(--glow-pk);color:var(--pk1);
+  transform:translateY(-2px);
+}
 
-/* ── Input Area ── */
-.ia{padding:14px 18px 18px;background:var(--bg2);border-top:2px solid var(--border);flex-shrink:0;position:relative;z-index:50;}
-.atbar{display:flex;gap:5px;margin-bottom:7px;flex-wrap:wrap;}
-.at-badge{background:var(--card);border:1px solid var(--blue);color:var(--blue);font-family:var(--font);font-size:5px;padding:4px 8px;display:flex;align-items:center;gap:4px;box-shadow:var(--gb);}
-.at-x{cursor:pointer;color:var(--pink);margin-left:3px;}
+/* MESSAGES */
+.msg{display:flex;gap:12px;animation:msgIn .3s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse}
 
-.upl-prev{background:var(--card);border:1px solid var(--blue);padding:7px;margin-bottom:7px;display:none;align-items:center;gap:9px;}
-.upl-prev img{width:36px;height:36px;object-fit:cover;}
-.upl-nm{font-size:15px;color:var(--blue);flex:1;}
-.upl-rm{background:none;border:none;color:var(--pink);cursor:pointer;font-size:15px;}
+.msg-avatar{
+  width:36px;height:36px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;border:2px solid;
+}
+.msg.bot .msg-avatar{border-color:var(--pk1);box-shadow:var(--glow-pk);background:var(--pk4);color:var(--pk1)}
+.msg.user .msg-avatar{border-color:var(--bl1);box-shadow:var(--glow-bl);background:var(--bl4);color:var(--bl1)}
 
-.ibox{display:flex;gap:9px;align-items:flex-end;}
-.iwrap{flex:1;background:var(--card);border:2px solid var(--border2);display:flex;align-items:flex-end;gap:7px;padding:7px 11px;transition:.2s;}
-.iwrap:focus-within{border-color:var(--pink);box-shadow:var(--gp);}
-#ci{flex:1;background:none;border:none;color:#fff;font-family:var(--vt);font-size:19px;outline:none;resize:none;max-height:110px;min-height:26px;letter-spacing:.3px;line-height:1.4;}
-#ci::placeholder{color:#ffffff22;}
-.iacts{display:flex;gap:5px;align-items:flex-end;}
-.iac{background:none;border:none;color:var(--dim);cursor:pointer;font-size:17px;padding:6px;transition:.2s;min-width:36px;min-height:36px;display:flex;align-items:center;justify-content:center;touch-action:manipulation;}
-.iac:hover{color:var(--pink);}
-.iac:active{color:var(--pink);transform:scale(.9);}
-.iac label{cursor:pointer;}
-.send-btn{background:linear-gradient(135deg,var(--pink),var(--purple));border:none;color:#fff;padding:11px 18px;cursor:pointer;font-size:17px;box-shadow:var(--gp);transition:.2s;min-width:48px;min-height:48px;touch-action:manipulation;}
-.send-btn:hover{transform:translateY(-2px);box-shadow:var(--gp),0 8px 20px #ff2d7833;}
-.send-btn:active{transform:scale(.95);}
-.ccount{text-align:right;font-size:13px;color:var(--dim);margin-top:3px;}
+.msg-bubble {
+  max-width:70%;padding:14px 16px;
+  line-height:1.6;font-size:14px;
+}
+.msg.bot .msg-bubble{
+  background:rgba(255,45,155,0.06);
+  border:1px solid var(--border-pk);
+  border-top-left-radius:0;
+  color:#eee;
+}
+.msg.user .msg-bubble{
+  background:rgba(0,200,255,0.1);
+  border:1px solid var(--border-bl);
+  border-top-right-radius:0;
+  color:#eee;
+}
+.msg-name{
+  font-family:var(--pixel);font-size:6px;
+  margin-bottom:6px;letter-spacing:1px;
+}
+.msg.bot .msg-name{color:var(--pk1)}
+.msg.user .msg-name{color:var(--bl1);text-align:right}
+.msg-time{font-size:10px;color:#444;margin-top:4px}
+.msg.user .msg-time{text-align:right}
 
-/* Token warning */
-.tkn-warn{font-family:var(--font);font-size:6px;color:var(--yellow);text-align:center;padding:5px;border:1px solid var(--yellow);margin-bottom:7px;display:none;letter-spacing:1px;}
-.tkn-warn.on{display:block;}
+/* TYPING */
+.typing-dots{display:flex;gap:4px;padding:4px 0}
+.typing-dots span{
+  width:6px;height:6px;background:var(--pk1);
+  animation:dot 1.2s infinite;
+}
+.typing-dots span:nth-child(2){animation-delay:.2s}
+.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes dot{0%,80%,100%{transform:scale(1);opacity:.4}40%{transform:scale(1.4);opacity:1}}
 
-/* ════ MODALS ════ */
-.mover{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(5px);}
-.mover.on{display:flex;}
-.modal{background:var(--card);border:2px solid var(--pink);box-shadow:var(--gp),0 0 60px #ff2d7818;padding:26px;width:90%;max-width:480px;position:relative;max-height:85vh;overflow-y:auto;animation:mIn .3s ease-out;}
-.modal.blue-border{border-color:var(--blue);box-shadow:var(--gb),0 0 60px #00f5ff18;}
-.mtitle{font-family:var(--font);font-size:10px;color:var(--pink);text-shadow:var(--gp);margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--border);letter-spacing:1px;}
-.modal.blue-border .mtitle{color:var(--blue);text-shadow:var(--gb);}
-.mclose{position:absolute;top:12px;right:12px;background:none;border:1px solid var(--border2);color:var(--dim);cursor:pointer;font-size:17px;padding:3px 8px;transition:.2s;}
-.mclose:hover{border-color:var(--pink);color:var(--pink);}
-.msc{margin-bottom:18px;}
-.mlbl{font-family:var(--font);font-size:7px;color:var(--blue);margin-bottom:9px;letter-spacing:1px;}
+/* CHAT INPUT */
+.chat-input-area {
+  padding:16px;
+  background:var(--dark2);
+  border-top:2px solid var(--border-pk);
+  flex-shrink:0;
+}
+
+.input-toolbar{
+  display:flex;gap:8px;margin-bottom:10px;
+  overflow-x:auto;padding-bottom:4px;
+}
+.tool-btn{
+  padding:4px 10px;
+  background:rgba(0,200,255,0.05);
+  border:1px solid var(--border-bl);
+  color:var(--bl3);cursor:pointer;
+  font-size:11px;font-family:var(--mono);
+  white-space:nowrap;transition:.15s;
+}
+.tool-btn:hover{background:rgba(0,200,255,0.15);border-color:var(--bl1);color:var(--bl1)}
+
+.input-row{display:flex;gap:10px;align-items:flex-end}
+.chat-textarea {
+  flex:1;padding:12px 14px;
+  background:rgba(0,0,0,0.4);
+  border:2px solid var(--border-pk);
+  color:#fff;font-family:var(--mono);font-size:14px;
+  resize:none;outline:none;
+  min-height:48px;max-height:140px;
+  transition:.2s;
+}
+.chat-textarea:focus{
+  border-color:var(--pk1);
+  box-shadow:var(--glow-pk);
+}
+
+.send-btn{
+  width:48px;height:48px;
+  background:linear-gradient(135deg,var(--pk1),var(--bl2));
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+  box-shadow:var(--glow-pk);transition:.2s;flex-shrink:0;
+}
+.send-btn:hover{transform:scale(1.1);box-shadow:0 0 20px #ff2d9b,0 0 40px #00c8ff55}
+.send-btn:active{transform:scale(.95)}
+
+.input-hint{
+  font-family:var(--pixel);font-size:6px;
+  color:#333;margin-top:6px;letter-spacing:1px;
+}
+
+/* ===== IMAGE GEN PANEL ===== */
+.image-gen-panel{padding:24px;overflow-y:auto;flex:1}
+.panel-title{
+  font-family:var(--pixel);font-size:14px;
+  color:var(--pk1);text-shadow:var(--glow-pk);
+  margin-bottom:6px;letter-spacing:2px;
+}
+.panel-sub{color:#666;font-size:13px;margin-bottom:24px;font-family:var(--mono)}
+
+.gen-form{display:flex;flex-direction:column;gap:14px}
+.gen-textarea{
+  width:100%;padding:14px;
+  background:rgba(0,0,0,0.4);
+  border:2px solid var(--border-pk);
+  color:#fff;font-family:var(--mono);font-size:13px;
+  resize:none;outline:none;height:100px;transition:.2s;
+}
+.gen-textarea:focus{border-color:var(--pk1);box-shadow:var(--glow-pk)}
+
+.style-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+}
+.style-chip{
+  padding:8px;text-align:center;
+  border:1px solid var(--border-pk);
+  color:#666;cursor:pointer;font-size:11px;
+  transition:.2s;font-family:var(--mono);
+}
+.style-chip:hover,.style-chip.selected{
+  border-color:var(--pk1);color:var(--pk1);
+  background:rgba(255,45,155,0.1);
+  box-shadow:var(--glow-pk);
+}
+
+.size-btns{display:flex;gap:8px;flex-wrap:wrap}
+.size-btn{
+  padding:8px 16px;
+  border:1px solid var(--border-bl);
+  color:#666;cursor:pointer;font-size:12px;
+  transition:.2s;font-family:var(--mono);
+}
+.size-btn:hover,.size-btn.selected{
+  border-color:var(--bl1);color:var(--bl1);
+  background:rgba(0,200,255,0.1);
+}
+
+.gen-result{
+  margin-top:20px;padding:20px;
+  border:2px dashed var(--border-pk);
+  min-height:200px;display:flex;
+  align-items:center;justify-content:center;
+  font-family:var(--pixel);font-size:10px;color:#333;
+  text-align:center;line-height:2;
+}
+.gen-result.loading{border-color:var(--bl1);color:var(--bl1);animation:borderGlow 1s alternate infinite}
+@keyframes borderGlow{from{box-shadow:none}to{box-shadow:var(--glow-bl)}}
+.gen-result.done{
+  border-color:var(--pk1);
+  background:linear-gradient(135deg,rgba(255,45,155,0.05),rgba(0,200,255,0.05));
+  flex-direction:column;gap:12px;color:#fff;font-family:var(--mono);font-size:14px;
+  box-shadow:var(--glow-pk);
+}
+
+/* ===== TOOLS PANEL ===== */
+.tools-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:16px;padding:24px;overflow-y:auto;flex:1;
+}
+.tool-card{
+  padding:20px;
+  background:var(--card);
+  border:2px solid var(--border-pk);
+  cursor:pointer;transition:.2s;
+  position:relative;overflow:hidden;
+}
+.tool-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,45,155,0),rgba(0,200,255,0));
+  transition:.3s;
+}
+.tool-card:hover{
+  border-color:var(--pk1);
+  box-shadow:var(--glow-pk);
+  transform:translateY(-3px);
+}
+.tool-card:hover::before{
+  background:linear-gradient(135deg,rgba(255,45,155,0.06),rgba(0,200,255,0.04));
+}
+.tool-icon{font-size:28px;margin-bottom:12px}
+.tool-name{
+  font-family:var(--pixel);font-size:8px;
+  color:var(--pk1);letter-spacing:1px;margin-bottom:8px;
+  text-shadow:var(--glow-pk);
+}
+.tool-desc{font-size:12px;color:#666;line-height:1.5;font-family:var(--mono)}
+.tool-tag{
+  margin-top:10px;display:inline-block;
+  padding:3px 8px;
+  background:rgba(0,200,255,0.1);
+  border:1px solid var(--border-bl);
+  color:var(--bl1);font-size:10px;
+}
+
+/* ===== SETTINGS PANEL ===== */
+.settings-panel{padding:24px;overflow-y:auto;flex:1;display:flex;gap:24px;flex-wrap:wrap;align-content:flex-start}
+.settings-section{
+  flex:1;min-width:280px;
+  background:var(--card);
+  border:2px solid var(--border-pk);
+  padding:20px;
+}
+.settings-title{
+  font-family:var(--pixel);font-size:8px;
+  color:var(--pk1);letter-spacing:2px;
+  margin-bottom:16px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--border-pk);
+}
+.setting-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 0;border-bottom:1px solid rgba(255,45,155,0.08);
+  gap:12px;
+}
+.setting-label{font-size:13px;color:#bbb;font-family:var(--mono)}
+.setting-label small{display:block;font-size:11px;color:#555;margin-top:2px}
 
 /* Toggle */
-.trow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);}
-.trlbl{font-size:17px;}
-.tog{position:relative;width:42px;height:22px;}
-.tog input{opacity:0;width:0;height:0;}
-.tsl{position:absolute;inset:0;background:var(--bg);border:2px solid var(--border2);cursor:pointer;transition:.3s;}
-.tsl::before{content:'';position:absolute;top:1px;left:1px;width:14px;height:14px;background:var(--dim);transition:.3s;}
-.tog input:checked+.tsl{background:#ff2d7815;border-color:var(--pink);}
-.tog input:checked+.tsl::before{transform:translateX(20px);background:var(--pink);box-shadow:var(--gp);}
+.toggle{
+  width:44px;height:22px;
+  background:rgba(255,255,255,0.1);
+  border:1px solid #333;
+  position:relative;cursor:pointer;flex-shrink:0;
+  transition:.2s;
+}
+.toggle.on{background:linear-gradient(90deg,var(--pk1),var(--bl2));border-color:var(--pk1);box-shadow:var(--glow-pk)}
+.toggle::after{
+  content:'';position:absolute;
+  width:16px;height:16px;background:#fff;
+  top:2px;left:2px;transition:.2s;
+}
+.toggle.on::after{left:24px}
 
-/* Profile modal sections */
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
-.scard{background:var(--bg);border:1px solid var(--border2);padding:11px;text-align:center;}
-.sval{font-family:var(--font);font-size:14px;color:var(--pink);margin-bottom:4px;}
-.slbl2{font-size:13px;color:var(--dim);}
-.badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
-.badge{font-family:var(--font);font-size:6px;padding:4px 9px;border:1px solid;letter-spacing:1px;}
-.badge.prem{border-color:var(--green);color:var(--green);text-shadow:var(--gg);}
-.badge.lv{border-color:var(--yellow);color:var(--yellow);}
-.badge.vip{border-color:var(--pink);color:var(--pink);}
+/* Slider */
+.slider-input{
+  -webkit-appearance:none;width:120px;height:4px;
+  background:linear-gradient(90deg,var(--pk1),var(--bl2));
+  outline:none;cursor:pointer;
+}
+.slider-input::-webkit-slider-thumb{
+  -webkit-appearance:none;width:16px;height:16px;
+  background:var(--pk1);cursor:pointer;
+  box-shadow:var(--glow-pk);
+}
 
-/* Admin panel */
-.admin-log{background:var(--bg);border:1px solid var(--border2);padding:10px;max-height:200px;overflow-y:auto;font-size:14px;color:var(--dim);line-height:1.8;}
-.admin-log .log-entry{padding:4px 0;border-bottom:1px solid var(--border);}
-.admin-log .log-entry span{color:var(--pink);}
+/* Select */
+.styled-select{
+  padding:6px 10px;
+  background:rgba(0,0,0,0.4);
+  border:1px solid var(--border-bl);
+  color:var(--bl1);font-family:var(--mono);font-size:12px;
+  outline:none;cursor:pointer;
+}
 
-/* CS Tickets */
-.ticket{background:var(--bg);border:1px solid var(--border2);padding:11px;margin-bottom:8px;}
-.ticket-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
-.ticket-title{font-family:var(--font);font-size:7px;color:var(--blue);}
-.ticket-status{font-family:var(--font);font-size:6px;padding:3px 7px;border:1px solid;}
-.ticket-status.open{border-color:var(--yellow);color:var(--yellow);}
-.ticket-status.closed{border-color:var(--green);color:var(--green);}
-.ticket-status.prio{border-color:var(--pink);color:var(--pink);}
-.ticket-msg{font-size:15px;color:var(--dim);line-height:1.4;}
-.ticket-reply{margin-top:8px;background:var(--bg2);border-left:2px solid var(--green);padding:7px;font-size:14px;color:var(--green);}
+/* ===== HISTORY PANEL ===== */
+.history-panel{padding:24px;overflow-y:auto;flex:1}
+.history-search{
+  width:100%;padding:12px;
+  background:rgba(0,0,0,0.4);
+  border:2px solid var(--border-bl);
+  color:#fff;font-family:var(--mono);font-size:13px;
+  outline:none;margin-bottom:16px;transition:.2s;
+}
+.history-search:focus{border-color:var(--bl1);box-shadow:var(--glow-bl)}
 
-/* Image gen preview */
-.imgprev{border:2px solid var(--pink);padding:4px;margin-top:10px;display:inline-block;}
-.imgprev canvas{display:block;image-rendering:pixelated;}
+.history-list{display:flex;flex-direction:column;gap:10px}
+.hcard{
+  padding:16px;
+  background:var(--card);
+  border:1px solid var(--border-pk);
+  cursor:pointer;transition:.2s;
+  border-left:3px solid var(--pk1);
+}
+.hcard:hover{box-shadow:var(--glow-pk);border-color:var(--pk1);transform:translateX(4px)}
+.hcard-title{font-size:14px;color:#ddd;margin-bottom:4px;font-family:var(--mono)}
+.hcard-meta{font-family:var(--pixel);font-size:6px;color:#444;letter-spacing:1px}
+.hcard-preview{font-size:12px;color:#555;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* Payment modal */
-.plan-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.plan{background:var(--bg);border:2px solid var(--border2);padding:16px;text-align:center;cursor:pointer;transition:.2s;}
-.plan:hover,.plan.sel{border-color:var(--pink);background:#ff2d7808;box-shadow:var(--gp);}
-.plan-name{font-family:var(--font);font-size:8px;color:var(--pink);margin-bottom:8px;}
-.plan-price{font-family:var(--font);font-size:12px;color:var(--yellow);margin-bottom:8px;}
-.plan-feats{font-size:14px;color:var(--dim);line-height:1.8;text-align:left;}
+/* ===== PROFILE PANEL ===== */
+.profile-panel{
+  padding:40px;overflow-y:auto;flex:1;
+  display:flex;flex-direction:column;align-items:center;gap:24px;
+}
+.profile-card{
+  width:100%;max-width:500px;
+  background:var(--card);
+  border:2px solid var(--pk1);
+  box-shadow:var(--glow-pk);
+  padding:30px;
+  text-align:center;
+}
+.profile-avatar{
+  width:80px;height:80px;
+  background:linear-gradient(135deg,var(--pk1),var(--bl2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;margin:0 auto 16px;
+  border:3px solid var(--pk1);
+  box-shadow:var(--glow-pk);
+  position:relative;overflow:hidden;
+}
+.profile-name{
+  font-family:var(--pixel);font-size:14px;
+  color:var(--pk1);text-shadow:var(--glow-pk);
+  margin-bottom:6px;
+}
+.profile-email{font-size:14px;color:#666;margin-bottom:16px}
+.stats-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+  margin-top:20px;
+}
+.stat-box{
+  padding:14px;
+  border:1px solid var(--border-pk);
+  background:rgba(255,45,155,0.04);
+}
+.stat-num{
+  font-family:var(--pixel);font-size:14px;
+  color:var(--pk1);text-shadow:var(--glow-pk);
+}
+.stat-lbl{font-size:11px;color:#555;margin-top:4px;font-family:var(--mono)}
 
-/* Voice */
-.v-ind{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);background:var(--card);border:2px solid var(--pink);box-shadow:var(--gp);padding:14px 22px;display:none;align-items:center;gap:11px;z-index:800;}
-.v-ind.on{display:flex;}
-.vwaves{display:flex;gap:3px;align-items:center;}
-.vwaves span{width:4px;background:var(--pink);animation:vw .6s ease-in-out infinite alternate;}
-.vwaves span:nth-child(1){height:8px;animation-delay:0s}
-.vwaves span:nth-child(2){height:16px;animation-delay:.1s}
-.vwaves span:nth-child(3){height:24px;animation-delay:.2s}
-.vwaves span:nth-child(4){height:16px;animation-delay:.3s}
-.vwaves span:nth-child(5){height:8px;animation-delay:.4s}
-@keyframes vw{to{transform:scaleY(.3)}}
-.vstop{background:none;border:1px solid var(--pink);color:var(--pink);cursor:pointer;padding:4px 8px;font-family:var(--font);font-size:6px;}
+/* ACHIEVEMENT */
+.achv-grid{
+  width:100%;max-width:500px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+}
+.achv{
+  padding:14px;text-align:center;
+  background:var(--card);
+  border:1px solid;
+  transition:.2s;
+}
+.achv.unlocked{border-color:var(--pk1);box-shadow:var(--glow-pk)}
+.achv.locked{border-color:#222;filter:grayscale(1);opacity:.4}
+.achv-icon{font-size:24px;margin-bottom:6px}
+.achv-name{font-family:var(--pixel);font-size:6px;color:#aaa;letter-spacing:1px}
 
-/* Timer display */
-.token-timer{font-family:var(--font);font-size:6px;color:var(--blue);text-align:center;padding:4px;letter-spacing:1px;}
+/* ===== NOTIFICATION TOAST ===== */
+.toast{
+  position:fixed;top:80px;right:16px;z-index:9999;
+  padding:14px 20px;
+  background:var(--card);
+  border:2px solid var(--pk1);
+  box-shadow:var(--glow-pk);
+  font-family:var(--pixel);font-size:7px;
+  color:var(--pk1);letter-spacing:1px;
+  animation:toastIn .3s ease;
+  max-width:300px;
+  display:none;
+}
+.toast.show{display:block}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
 
-/* Credits */
-.credits-bar{display:none;}
-.credits-bar .cr-pink{color:var(--pink);text-shadow:var(--gp);}
-.credits-bar .cr-blue{color:var(--blue);text-shadow:var(--gb);}
+/* PIXEL CORNER DECORATIONS */
+.px-corner{position:relative}
+.px-corner::before,.px-corner::after,
+.px-corner>span::before,.px-corner>span::after{
+  content:'';position:absolute;width:8px;height:8px;
+  background:var(--pk1);
+}
+.px-corner::before{top:-2px;left:-2px}
+.px-corner::after{top:-2px;right:-2px}
+.px-corner>span::before{bottom:-2px;left:-2px}
+.px-corner>span::after{bottom:-2px;right:-2px}
 
-/* Emoji picker */
-#empick{display:none;position:fixed;bottom:90px;right:70px;background:var(--card);border:2px solid var(--pink);padding:10px;z-index:800;grid-template-columns:repeat(7,1fr);gap:5px;box-shadow:var(--gp);max-width:260px;}
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--dark)}
+::-webkit-scrollbar-thumb{background:var(--pk1)}
 
-/* ── Media ── */
+/* SIDEBAR TOGGLE */
+.sidebar-toggle{
+  display:none;width:36px;height:36px;
+  background:none;border:1px solid var(--border-pk);
+  color:var(--pk1);cursor:pointer;font-size:18px;
+  align-items:center;justify-content:center;flex-shrink:0;
+}
 @media(max-width:768px){
-  /* Sidebar */
-  .sb{position:fixed;left:-260px;transition:left .3s;z-index:200;height:100vh;height:100dvh;}
-  .sb.mob{left:0;box-shadow:4px 0 20px #ff2d7855;}
-  /* Overlay gelap saat sidebar terbuka di mobile */
-  .sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:199;}
-  .sb-overlay.on{display:block;}
-
-  /* Layout utama */
-  #appS{
-    height:100vh;
-    height:100dvh;
-    overflow:hidden;
-  }
-  .mc{
-    height:100vh;
-    height:100dvh;
-    display:flex;
-    flex-direction:column;
-    overflow:hidden;
-  }
-  
-  /* Chat area - bisa scroll */
-  .ca{
-    flex:1;
-    overflow-y:auto;
-    -webkit-overflow-scrolling:touch;
-    padding:12px;
-  }
-  
-  /* Input area - SELALU di bawah, tidak tertutup */
-  .ia{
-    flex-shrink:0;
-    padding:8px 10px 12px;
-    background:var(--bg2);
-    border-top:2px solid var(--border);
-    position:relative;
-    z-index:50;
-  }
-  
-  /* Kotak input */
-  .ibox{gap:6px;}
-  .iwrap{padding:6px 8px;}
-  #ci{font-size:16px;min-height:24px;}
-  
-  /* Tombol kirim - besar dan mudah ditekan */
-  .send-btn{
-    padding:10px 14px;
-    min-width:48px;
-    min-height:48px;
-    font-size:18px;
-  }
-  
-  /* Tombol aksi kecil */
-  .iac{min-width:32px;min-height:32px;font-size:16px;}
-  
-  /* Topbar */
-  .topbar{padding:8px 10px;}
-  .tb-title{font-size:7px;}
-  .msel{display:none;}
-  #engineBadge{display:none!important;}
-  
-  /* Sembunyikan beberapa tombol di topbar biar tidak penuh */
-  .tb-actions .ib:nth-child(n+5){display:none;}
-  
-  /* Grid */
-  .sgrid{grid-template-columns:1fr;}
-  .plan-cards{grid-template-columns:1fr;}
-  .stat-grid{grid-template-columns:1fr;}
-  
-  /* Modal */
-  .modal{max-height:90vh;overflow-y:auto;}
+  .sidebar{position:fixed;z-index:150;height:100%;transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0);box-shadow:4px 0 30px rgba(255,45,155,0.4)}
+  .sidebar-toggle{display:flex}
+  .sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:149}
+  .sb-overlay.on{display:block}
+  .welcome-bot{font-size:50px}
+  .welcome-title{font-size:12px}
 }
 
-@media(max-width:480px){
-  .topbar{gap:5px;}
-  .tb-actions{gap:4px;}
-  .ia{padding:6px 8px 10px;}
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,0.85);
+  display:none;align-items:center;justify-content:center;
 }
-@media(max-width:480px){
-  .topbar .ib:not(:first-child):not(:last-child){display:none;}
-  #adminBtn,#exportBtn{display:none;}
+.modal-overlay.show{display:flex}
+.modal{
+  background:var(--dark2);
+  border:2px solid var(--pk1);
+  box-shadow:var(--glow-pk);
+  padding:30px;width:400px;max-width:95vw;
+  animation:fadeIn .3s ease;
 }
+.modal-title{
+  font-family:var(--pixel);font-size:10px;
+  color:var(--pk1);margin-bottom:20px;letter-spacing:2px;
+}
+.modal-close{
+  float:right;background:none;border:none;
+  color:#444;cursor:pointer;font-size:20px;
+}
+.modal-close:hover{color:var(--pk1)}
+
+/* ===== PIXEL ART LOADING ===== */
+.pixel-loader{
+  display:inline-flex;gap:4px;
+}
+.pl-sq{width:8px;height:8px;background:var(--pk1);animation:plAnim 1s infinite}
+.pl-sq:nth-child(2){background:var(--bl1);animation-delay:.2s}
+.pl-sq:nth-child(3){background:var(--pk2);animation-delay:.4s}
+.pl-sq:nth-child(4){background:var(--bl2);animation-delay:.6s}
+@keyframes plAnim{0%,80%,100%{transform:scaleY(0.3)}40%{transform:scaleY(1)}}
+
+/* VOICE VISUALIZER */
+.voice-viz{
+  display:flex;gap:3px;align-items:center;height:30px;
+  display:none;
+}
+.voice-viz.active{display:flex}
+.vbar{width:4px;background:linear-gradient(var(--pk1),var(--bl1));animation:vwave 0.8s ease infinite}
+.vbar:nth-child(1){animation-delay:0s}
+.vbar:nth-child(2){animation-delay:.1s;height:70%}
+.vbar:nth-child(3){animation-delay:.2s}
+.vbar:nth-child(4){animation-delay:.3s;height:50%}
+.vbar:nth-child(5){animation-delay:.4s;height:80%}
+.vbar:nth-child(6){animation-delay:.5s;height:40%}
+@keyframes vwave{0%,100%{height:20%}50%{height:100%}}
+
+/* TAG strip */
+.tag-strip{
+  padding:6px 16px;background:var(--dark);
+  border-bottom:1px solid rgba(0,200,255,0.1);
+  display:flex;gap:8px;overflow-x:auto;flex-shrink:0;
+}
+.tag{
+  padding:4px 10px;border:1px solid var(--border-bl);
+  color:#555;font-size:11px;white-space:nowrap;cursor:pointer;
+  font-family:var(--mono);transition:.15s;
+}
+.tag:hover{color:var(--bl1);border-color:var(--bl1)}
+
+/* PixelCursor */
+*{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Crect x='0' y='0' width='4' height='4' fill='%23ff2d9b'/%3E%3Crect x='4' y='4' width='4' height='4' fill='%23ff2d9b'/%3E%3Crect x='8' y='8' width='4' height='4' fill='%23ff2d9b' opacity='0.5'/%3E%3C/svg%3E") 0 0, crosshair}
 </style>
 </head>
 <body>
 
-<div class="scan"></div>
-<canvas id="px"></canvas>
-<div id="pgbar"><div id="pgfill"></div></div>
-<div id="toast"></div>
+<!-- BG EFFECTS -->
+<div class="bg-grid"></div>
+<div class="pixel-rain" id="pixelRain"></div>
 
-<!-- Voice indicator -->
-<div class="v-ind" id="vind">
-  <div class="vwaves"><span></span><span></span><span></span><span></span><span></span></div>
-  <span style="font-family:var(--font);font-size:7px;color:var(--pink)">MENDENGARKAN...</span>
-  <button class="vstop" onclick="stopVoice()">STOP</button>
-</div>
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
-<!-- Emoji Picker -->
-<div id="empick"></div>
+<!-- ==================== AUTH SCREEN ==================== -->
+<div id="authScreen">
+  <div class="auth-container">
+    <div class="auth-header">
+      <!-- PIXEL BOT SVG -->
+      <svg class="bot-face" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
+        <rect x="20" y="4" width="20" height="4" fill="#ff2d9b"/>
+        <rect x="28" y="0" width="4" height="4" fill="#00c8ff"/>
+        <rect x="12" y="8" width="36" height="32" fill="#2d0050"/>
+        <rect x="8" y="12" width="4" height="24" fill="#2d0050"/>
+        <rect x="48" y="12" width="4" height="24" fill="#2d0050"/>
+        <rect x="16" y="16" width="8" height="8" fill="#ff2d9b"/>
+        <rect x="36" y="16" width="8" height="8" fill="#00c8ff"/>
+        <rect x="18" y="18" width="4" height="4" fill="#fff"/>
+        <rect x="38" y="18" width="4" height="4" fill="#fff"/>
+        <rect x="20" y="30" width="20" height="4" fill="#ff2d9b"/>
+        <rect x="24" y="34" width="12" height="2" fill="#ff6ec7"/>
+        <rect x="16" y="40" width="28" height="4" fill="#1a0035"/>
+        <rect x="20" y="44" width="8" height="12" fill="#2d0050"/>
+        <rect x="32" y="44" width="8" height="12" fill="#2d0050"/>
+        <rect x="4" y="16" width="4" height="8" fill="#ff2d9b" opacity="0.5"/>
+        <rect x="52" y="16" width="4" height="8" fill="#00c8ff" opacity="0.5"/>
+      </svg>
+      <div class="logo-pixel">EX<span style="color:var(--bl1)">BOTZ</span></div>
+      <div class="logo-sub">[ Exbotz V.1 Beta ]</div>
+    </div>
 
-<!-- ════════════ AUTH SCREEN ════════════ -->
-<div id="authS" class="screen on">
-  <div class="logo-wrap">
-    <svg class="pixel-bot" width="80" height="80" viewBox="0 0 32 32">
-      <rect x="8" y="12" width="16" height="14" fill="#ff2d78"/>
-      <rect x="10" y="4" width="12" height="10" fill="#00f5ff"/>
-      <rect x="12" y="7" width="3" height="3" fill="#ff2d78"/>
-      <rect x="17" y="7" width="3" height="3" fill="#00f5ff"/>
-      <rect x="13" y="11" width="6" height="2" fill="#000"/>
-      <rect x="13" y="11" width="2" height="2" fill="#ff2d78"/>
-      <rect x="17" y="11" width="2" height="2" fill="#00f5ff"/>
-      <rect x="4" y="14" width="4" height="8" fill="#aa00ff"/>
-      <rect x="24" y="14" width="4" height="8" fill="#aa00ff"/>
-      <rect x="10" y="26" width="5" height="5" fill="#0099cc"/>
-      <rect x="17" y="26" width="5" height="5" fill="#0099cc"/>
-      <rect x="15" y="1" width="2" height="4" fill="#ffff00"/>
-      <rect x="14" y="0" width="4" height="2" fill="#ffff00"/>
-    </svg>
-    <div class="logo-title" id="lgTitle">EXBOTZ</div>
-    <div class="logo-sub">[ AI SYSTEM v2.0 ]</div>
-  </div>
+    <!-- TABS -->
+    <div class="auth-tabs">
+      <div class="auth-tab active" data-action="switchTab" data-tab="login">LOGIN</div>
+      <div class="auth-tab" data-action="switchTab" data-tab="register">REGISTER</div>
+    </div>
 
-  <div style="width:100%;max-width:420px;position:relative;">
-    <div class="auth-card">
-      <div class="pc tl"></div><div class="pc tr"></div>
-      <div class="pc bl"></div><div class="pc br"></div>
-
-      <div class="auth-tabs">
-        <button class="atab on" id="tab-login" onclick="authTab('login')">▶ LOGIN</button>
-        <button class="atab" id="tab-reg" onclick="authTab('reg')">✦ DAFTAR</button>
+    <div class="auth-body">
+      <!-- LOGIN FORM -->
+      <div id="loginForm">
+        <div class="form-group">
+          <label class="form-label">◈ EMAIL ADDRESS</label>
+          <input class="form-input" type="email" placeholder="user@email.com" id="loginEmail">
+        </div>
+        <div class="form-group">
+          <label class="form-label">◈ PASSWORD</label>
+          <input class="form-input" type="password" placeholder="••••••••" id="loginPass">
+        </div>
+        <div style="text-align:right;margin-bottom:16px">
+          <button class="link-btn" data-action="switchTab" data-tab="forgot">▷ Forgot Password?</button>
+        </div>
+        <button class="btn-primary" id="btnLogin">  ENTER EXBOTZ</button>
+        <div class="divider">OR</div>
+        <button class="btn-google" data-action="googleLogin">
+          <div class="google-icon"></div>
+          Continue with Google
+        </button>
+        <div class="auth-footer">
+          No account? <button class="link-btn" data-action="switchTab" data-tab="register">Register here</button>
+        </div>
       </div>
 
-      <div class="auth-body">
-        <!-- LOGIN -->
-        <div class="fpanel on" id="p-login">
-          <div class="ftitle">[ MASUK SISTEM ]</div>
-          <div class="fg"><label>▸ EMAIL</label><input class="px-in" id="li-email" type="email" placeholder="kamu@email.com"></div>
-          <div class="fg"><label>▸ PASSWORD</label><input class="px-in" id="li-pass" type="password" placeholder="••••••••"></div>
-          <div id="captcha-login" class="captcha-box">
-            <div class="captcha-q" id="cq-login"></div>
-            <input class="px-in" id="ca-login" placeholder="Jawab captcha..." style="margin-top:6px">
-          </div>
-          <div class="forgot-row"><a onclick="authTab('forgot')">LUPA PASSWORD?</a></div>
-          <button class="px-btn" onclick="doLogin()">▶ MASUK</button>
-          <div class="divider">ATAU</div>
-          <button class="g-btn" onclick="doGoogle()">
-            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-            LOGIN DENGAN GOOGLE
-          </button>
-          <div class="switch-auth">BELUM PUNYA AKUN? <span class="swlink" onclick="authTab('reg')">DAFTAR</span></div>
+      <!-- REGISTER FORM -->
+      <div id="registerForm" style="display:none">
+        <div class="form-group">
+          <label class="form-label">◈ USERNAME</label>
+          <input class="form-input" type="text" placeholder="CoolUser99" id="regUser">
         </div>
-
-        <!-- REGISTER -->
-        <div class="fpanel" id="p-reg">
-          <div class="ftitle">[ BUAT AKUN ]</div>
-          <div class="fg"><label>▸ USERNAME</label><input class="px-in" id="r-name" placeholder="pixel_hero"></div>
-          <div class="fg"><label>▸ EMAIL</label><input class="px-in" id="r-email" type="email" placeholder="kamu@email.com"></div>
-          <div class="fg"><label>▸ PASSWORD</label><input class="px-in" id="r-pass" type="password" placeholder="min 8 karakter"></div>
-          <div class="fg"><label>▸ KONFIRMASI PASSWORD</label><input class="px-in" id="r-pass2" type="password" placeholder="ulangi password"></div>
-          <div class="fg">
-            <label>▸ KODE OTP (dikirim ke email)</label>
-            <div class="otp-row">
-              <input class="px-in" id="r-otp" placeholder="6 digit OTP" maxlength="6">
-              <button class="otp-send-btn" onclick="sendOTP('r-email','r-otp-timer')">KIRIM OTP</button>
-            </div>
-            <div id="r-otp-timer" style="font-family:var(--font);font-size:6px;color:var(--blue);margin-top:4px;"></div>
-          </div>
-          <button class="px-btn" onclick="doRegister()">✦ BUAT AKUN</button>
-          <div class="divider">ATAU</div>
-          <button class="g-btn" onclick="doGoogle()">
-            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-            DAFTAR DENGAN GOOGLE
-          </button>
-          <div class="switch-auth">SUDAH PUNYA AKUN? <span class="swlink" onclick="authTab('login')">LOGIN</span></div>
+        <div class="form-group">
+          <label class="form-label">◈ EMAIL ADDRESS</label>
+          <input class="form-input" type="email" placeholder="user@email.com" id="regEmail">
         </div>
+        <div class="form-group">
+          <label class="form-label">◈ PASSWORD</label>
+          <input class="form-input" type="password" placeholder="Min 8 characters" id="regPass">
+        </div>
+        <div class="form-group">
+          <label class="form-label">◈ CONFIRM PASSWORD</label>
+          <input class="form-input" type="password" placeholder="Repeat password" id="regPass2">
+        </div>
+        <div style="margin-bottom:16px;font-size:12px;color:#555">
+          By registering, you agree to our <button class="link-btn" style="font-size:12px">Terms of Service</button>
+        </div>
+        <button class="btn-primary" id="btnRegister">  CREATE ACCOUNT</button>
+        <div class="divider">OR</div>
+        <button class="btn-google" data-action="googleLogin">
+          <div class="google-icon"></div>
+          Sign up with Google
+        </button>
+        <div class="auth-footer">
+          Already have account? <button class="link-btn" data-action="switchTab" data-tab="login">Login</button>
+        </div>
+      </div>
 
-        <!-- FORGOT -->
-        <div class="fpanel" id="p-forgot">
-          <div class="ftitle">[ RESET PASSWORD ]</div>
-          <div style="font-size:16px;color:var(--dim);margin-bottom:14px;line-height:1.5">Masukkan email kamu, kami kirim OTP untuk reset password.</div>
-          <div class="fg"><label>▸ EMAIL</label><input class="px-in" id="fp-email" type="email" placeholder="kamu@email.com"></div>
-          <div class="fg" id="fp-otp-wrap" style="display:none">
-            <label>▸ KODE OTP</label>
-            <div class="otp-row">
-              <input class="px-in" id="fp-otp" placeholder="6 digit OTP" maxlength="6">
-            </div>
-          </div>
-          <div class="fg" id="fp-pass-wrap" style="display:none">
-            <label>▸ PASSWORD BARU</label>
-            <input class="px-in" id="fp-newpass" type="password" placeholder="password baru">
-          </div>
-          <button class="px-btn" id="fp-btn" onclick="doForgot()">📨 KIRIM OTP</button>
-          <div class="switch-auth" style="margin-top:12px"><span class="swlink" onclick="authTab('login')">← KEMBALI LOGIN</span></div>
+      <!-- FORGOT PW FORM -->
+      <div id="forgotForm" style="display:none">
+        <button class="back-btn" data-action="switchTab" data-tab="login">◀ BACK TO LOGIN</button>
+        <div class="form-group">
+          <label class="form-label">◈ REGISTERED EMAIL</label>
+          <input class="form-input" type="email" placeholder="user@email.com" id="forgotEmail">
+        </div>
+        <div style="font-size:12px;color:#555;margin-bottom:16px;font-family:var(--mono)">
+          We'll send a reset link to your email address.
+        </div>
+        <button class="btn-primary" id="btnForgot">  SEND RESET LINK</button>
+        <div class="auth-footer" style="margin-top:14px">
+          Remembered? <button class="link-btn" data-action="switchTab" data-tab="login">Back to Login</button>
         </div>
       </div>
     </div>
-  </div>
 
-  <div style="font-family:var(--font);font-size:6px;color:var(--dim);text-align:center;letter-spacing:1px">
-    © 2025 EXBOTZ AI — by <span style="color:var(--pink)">PINLYY</span> | Gratis Selamanya ✦
+    <div class="credit-badge">POWERED BY <span>EXBOTZ AI</span> · CRAFTED BY <span>DhooLiaa</span></div>
   </div>
 </div>
 
-<!-- ════════════ APP SCREEN ════════════ -->
-<div id="appS" class="screen">
-  <!-- Overlay untuk tutup sidebar di mobile -->
-  <div class="sb-overlay" id="sbOverlay" onclick="closeMobSB()"></div>
-  <!-- SIDEBAR -->
-  <aside class="sb" id="sb">
-    <div class="sb-hd">
-      <span class="sb-logo" id="sbLogo">⚡ EXBOTZ</span>
-      <button class="sb-tog" onclick="togSB()" id="sbTog">◀</button>
+<!-- ==================== MAIN APP ==================== -->
+<div id="mainApp">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <button class="sidebar-toggle" id="sidebarToggle" data-action="toggleSidebar">☰</button>
+    <div class="topbar-logo">EX<span>BOTZ</span></div>
+    <div class="status-dot"></div>
+    <div class="topbar-status">ONLINE</div>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-btns">
+      <button class="top-btn" onclick="openModal('shortcutsModal')">⌨ SHORTCUTS</button>
+      <button class="top-btn" data-action="newChat">+ NEW CHAT</button>
+      <div class="user-avatar" id="userAvatar" data-action="switchPanel" data-panel="profile">U</div>
+    </div>
+  </div>
+
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <div class="sb-overlay" id="sbOverlay" data-action="closeSidebar"></div>
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-section">◈ NAVIGATION</div>
+
+      <div class="sidebar-item active" data-action="switchPanel" data-panel="chat">
+        <span class="item-icon">💬</span>
+        <span class="item-label">Chat AI</span>
+        <div class="sidebar-badge">HOT</div>
+      </div>
+      <div class="sidebar-item" data-action="switchPanel" data-panel="imagine">
+        <span class="item-icon">🎨</span>
+        <span class="item-label">Imagine AI</span>
+      </div>
+      <div class="sidebar-item" data-action="switchPanel" data-panel="tools">
+        <span class="item-icon">🛠</span>
+        <span class="item-label">Tools</span>
+      </div>
+      <div class="sidebar-item" data-action="switchPanel" data-panel="history">
+        <span class="item-icon">📜</span>
+        <span class="item-label">History</span>
+      </div>
+      <div class="sidebar-item" data-action="switchPanel" data-panel="settings">
+        <span class="item-icon">⚙️</span>
+        <span class="item-label">Settings</span>
+      </div>
+      <div class="sidebar-item" data-action="switchPanel" data-panel="profile">
+        <span class="item-icon">👤</span>
+        <span class="item-label">Profile</span>
+      </div>
+
+      <div class="sidebar-section" style="margin-top:8px">◈ RECENT CHATS</div>
+      <div class="history-item" onclick="loadChat('how to make ramen')">▷ How to make ramen...</div>
+      <div class="history-item" onclick="loadChat('write a poem about stars')">▷ Write a poem about...</div>
+      <div class="history-item" onclick="loadChat('explain quantum physics')">▷ Explain quantum phy...</div>
+      <div class="history-item" onclick="loadChat('fix my javascript code')">▷ Fix my JavaScript...</div>
+      <div class="history-item" onclick="loadChat('generate logo ideas')">▷ Generate logo ideas...</div>
+
+      <div class="sidebar-footer">
+        <div class="token-label">TOKEN USAGE</div>
+        <div class="token-bar"><div class="token-fill"></div></div>
+        <div class="token-val" id="tokenVal">6,500 / 10,000</div>
+      </div>
     </div>
 
-    <button class="nchat-btn" onclick="newChat()">
-      <span>✦</span><span id="ncTxt">CHAT BARU</span>
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+      <!-- ===== CHAT PANEL ===== -->
+      <div class="panel active" id="panel-chat">
+        <div class="chat-mode-bar">
+          <div class="mode-pill active" onclick="setMode(this,'standard')">⚡ Standard</div>
+          <div class="mode-pill" onclick="setMode(this,'creative')">✨ Creative</div>
+          <div class="mode-pill" onclick="setMode(this,'coder')">💻 Coder</div>
+          <div class="mode-pill" onclick="setMode(this,'analyst')">📊 Analyst</div>
+          <div class="mode-pill" onclick="setMode(this,'writer')">📝 Writer</div>
+          <div class="mode-pill" onclick="setMode(this,'tutor')">🎓 Tutor</div>
+        </div>
+
+        <div class="tag-strip">
+          <div class="tag" onclick="sendQuick('Explain like I am 5')">ELI5</div>
+          <div class="tag" onclick="sendQuick('Give me bullet points')">Bullet points</div>
+          <div class="tag" onclick="sendQuick('Write code for this')">Write code</div>
+          <div class="tag" onclick="sendQuick('Summarize this')">Summarize</div>
+          <div class="tag" onclick="sendQuick('Translate to English')">Translate</div>
+          <div class="tag" onclick="sendQuick('Make it shorter')">Shorter</div>
+          <div class="tag" onclick="sendQuick('Make it longer')">Longer</div>
+          <div class="tag" onclick="sendQuick('Fix grammar')">Fix Grammar</div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+          <div class="welcome-screen" id="welcomeScreen">
+            <div class="welcome-bot">🤖</div>
+            <div class="welcome-title">EXBOTZ AI</div>
+            <div class="welcome-sub">[ READY TO ASSIST ]</div>
+            <div style="color:#555;font-size:13px;font-family:var(--mono);max-width:340px;line-height:1.6">
+              Hello! I'm Exbotz, your pixel-powered AI companion.<br>What shall we explore today?
+            </div>
+            <div class="quick-prompts">
+              <button class="quick-btn" onclick="sendQuick('Write a short story about a space explorer')">📖 Write a story</button>
+              <button class="quick-btn" onclick="sendQuick('Explain machine learning in simple terms')">🧠 Explain AI</button>
+              <button class="quick-btn" onclick="sendQuick('Write a Python hello world program')">💻 Write code</button>
+              <button class="quick-btn" onclick="sendQuick('What are 5 tips for productivity?')">⚡ Productivity tips</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input-area">
+          <div class="input-toolbar">
+            <button class="tool-btn" onclick="toggleVoice()">🎤 Voice</button>
+            <button class="tool-btn" onclick="showToast('📎 File upload coming soon!')">📎 Attach</button>
+            <button class="tool-btn" onclick="showToast('🌐 Web search enabled!')">🌐 Web</button>
+            <button class="tool-btn" onclick="showToast('📊 Data mode activated!')">📊 Data</button>
+            <button class="tool-btn" onclick="showToast('🔣 Code mode activated!')">🔣 Code</button>
+            <button class="tool-btn" data-action="clearChat">🗑 Clear</button>
+          </div>
+          <div class="voice-viz" id="voiceViz">
+            <div class="vbar"></div><div class="vbar"></div><div class="vbar"></div>
+            <div class="vbar"></div><div class="vbar"></div><div class="vbar"></div>
+            <span style="font-family:var(--pixel);font-size:6px;color:var(--pk1);margin-left:8px">LISTENING...</span>
+          </div>
+          <div class="input-row">
+            <textarea class="chat-textarea" id="chatInput" placeholder="Type your message to Exbotz..." rows="1"
+              onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+            <button class="send-btn" id="btnSend">▶</button>
+          </div>
+          <div class="input-hint">PRESS ENTER TO SEND · SHIFT+ENTER FOR NEW LINE · CRAFTED BY DhooLiaa</div>
+        </div>
+      </div>
+
+      <!-- ===== IMAGINE PANEL ===== -->
+      <div class="panel" id="panel-imagine">
+        <div class="image-gen-panel">
+          <div class="panel-title">◈ IMAGINE AI</div>
+          <div class="panel-sub">Generate pixel art, anime, realistic, and more with AI</div>
+
+          <div class="gen-form">
+            <div>
+              <div class="form-label">▷ DESCRIBE YOUR IMAGE</div>
+              <textarea class="gen-textarea" id="imgPrompt" placeholder="A pixel art cat in a neon city, pink and blue lights, cyberpunk style..."></textarea>
+            </div>
+
+            <div>
+              <div class="form-label">▷ ART STYLE</div>
+              <div class="style-grid">
+                <div class="style-chip selected" onclick="selectStyle(this)">🎮 Pixel Art</div>
+                <div class="style-chip" onclick="selectStyle(this)">🌸 Anime</div>
+                <div class="style-chip" onclick="selectStyle(this)">📸 Realistic</div>
+                <div class="style-chip" onclick="selectStyle(this)">🎨 Oil Paint</div>
+                <div class="style-chip" onclick="selectStyle(this)">✏️ Sketch</div>
+                <div class="style-chip" onclick="selectStyle(this)">🌌 Dreamy</div>
+                <div class="style-chip" onclick="selectStyle(this)">⚡ Cyberpunk</div>
+                <div class="style-chip" onclick="selectStyle(this)">🏺 Watercolor</div>
+              </div>
+            </div>
+
+            <div>
+              <div class="form-label">▷ IMAGE SIZE</div>
+              <div class="size-btns">
+                <div class="size-btn selected" onclick="selectSize(this)">512×512</div>
+                <div class="size-btn" onclick="selectSize(this)">768×768</div>
+                <div class="size-btn" onclick="selectSize(this)">1024×512</div>
+                <div class="size-btn" onclick="selectSize(this)">512×1024</div>
+                <div class="size-btn" onclick="selectSize(this)">1024×1024</div>
+              </div>
+            </div>
+
+            <button class="btn-primary" id="btnGenerate" style="width:auto;max-width:200px;clip-path:none">
+              ▶ GENERATE IMAGE
+            </button>
+          </div>
+
+          <div class="gen-result" id="genResult">
+            <div>
+              <div style="font-size:40px;margin-bottom:12px">🎨</div>
+              ENTER A PROMPT AND CLICK GENERATE<br>
+              <span style="font-size:6px;color:#333;font-family:var(--pixel)">YOUR PIXEL ART AWAITS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TOOLS PANEL ===== -->
+      <div class="panel" id="panel-tools">
+        <div class="tools-grid">
+          <div class="tool-card" onclick="openTool('translator')">
+            <div class="tool-icon">🌐</div>
+            <div class="tool-name">TRANSLATOR</div>
+            <div class="tool-desc">Translate text between 100+ languages instantly with AI precision.</div>
+            <div class="tool-tag">LANGUAGE</div>
+          </div>
+          <div class="tool-card" onclick="openTool('summarizer')">
+            <div class="tool-icon">📋</div>
+            <div class="tool-name">SUMMARIZER</div>
+            <div class="tool-desc">Compress long articles, documents, and text into key points.</div>
+            <div class="tool-tag">PRODUCTIVITY</div>
+          </div>
+          <div class="tool-card" onclick="openTool('codehelper')">
+            <div class="tool-icon">💻</div>
+            <div class="tool-name">CODE HELPER</div>
+            <div class="tool-desc">Debug, explain, and generate code in any programming language.</div>
+            <div class="tool-tag">DEVELOPER</div>
+          </div>
+          <div class="tool-card" onclick="openTool('writer')">
+            <div class="tool-icon">📝</div>
+            <div class="tool-name">AI WRITER</div>
+            <div class="tool-desc">Generate blogs, essays, emails, scripts, and more with ease.</div>
+            <div class="tool-tag">WRITING</div>
+          </div>
+          <div class="tool-card" onclick="openTool('math')">
+            <div class="tool-icon">🧮</div>
+            <div class="tool-name">MATH SOLVER</div>
+            <div class="tool-desc">Solve complex equations, calculus, algebra step by step.</div>
+            <div class="tool-tag">EDUCATION</div>
+          </div>
+          <div class="tool-card" onclick="openTool('quiz')">
+            <div class="tool-icon">❓</div>
+            <div class="tool-name">QUIZ MAKER</div>
+            <div class="tool-desc">Auto-generate quizzes and flashcards from any topic.</div>
+            <div class="tool-tag">EDUCATION</div>
+          </div>
+          <div class="tool-card" onclick="openTool('seo')">
+            <div class="tool-icon">🔍</div>
+            <div class="tool-name">SEO WRITER</div>
+            <div class="tool-desc">Write SEO-optimized content with keywords and meta tags.</div>
+            <div class="tool-tag">MARKETING</div>
+          </div>
+          <div class="tool-card" onclick="openTool('idea')">
+            <div class="tool-icon">💡</div>
+            <div class="tool-name">IDEA GEN</div>
+            <div class="tool-desc">Brainstorm ideas for projects, businesses, startups, and more.</div>
+            <div class="tool-tag">CREATIVE</div>
+          </div>
+          <div class="tool-card" onclick="openTool('emoji')">
+            <div class="tool-icon">😎</div>
+            <div class="tool-name">EMOJI CHAT</div>
+            <div class="tool-desc">Express yourself with AI-generated emoji-based responses.</div>
+            <div class="tool-tag">FUN</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== HISTORY PANEL ===== -->
+      <div class="panel" id="panel-history">
+        <div class="history-panel">
+          <div class="panel-title">◈ CHAT HISTORY</div>
+          <div class="panel-sub" style="margin-bottom:16px">All your past conversations with Exbotz</div>
+          <input class="history-search" placeholder="🔍 Search conversations..." oninput="filterHistory(this.value)">
+          <div class="history-list" id="historyList">
+            <!-- populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SETTINGS PANEL ===== -->
+      <div class="panel" id="panel-settings">
+        <div class="settings-panel">
+          <div class="settings-section">
+            <div class="settings-title">◈ APPEARANCE</div>
+            <div class="setting-row">
+              <div class="setting-label">Pixel Grid Background<small>Animated grid effect</small></div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">Scanline Effect<small>CRT monitor style</small></div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">Pixel Rain<small>Falling pixel animation</small></div>
+              <div class="toggle on" onclick="togglePixelRain(this)"></div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">Glow Effects<small>Neon glow intensity</small></div>
+              <input type="range" class="slider-input" min="0" max="100" value="80">
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">Theme Color<small>Primary accent</small></div>
+              <select class="styled-select" onchange="changeTheme(this.value)">
+                <option value="pink">Hot Pink</option>
+                <option value="blue">Cyber Blue</option>
+                <option value="purple">Neon Purple</option>
+                <option value="green">Matrix Green</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-title">◈ AI BEHAVIOR</div>
+            <div class="setting-row">
+              <div class="setting-label">Response Style<small>How Exbotz talks</small></div>
+              <select class="styled-select">
+                <option>Friendly</option>
+                <option>Professional</option>
+                <option>Casual</option>
+                <option>Formal</option>
+              </select>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">Response Length<small>Short / Medium / Long</small></div>
+              <select class="styled-select">
+                <option>Medium</option>
+                <option>Short</option>
+                <option>Long</option>
+                <option>Detailed</option>
+              </select>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">Auto-suggest Prompts<small>Show quick prompts</small></div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">Stream Responses<small>Word by word typing</small></div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">Temperature<small>Creativity level</small></div>
+              <input type="range" class="slider-input" min="0" max="100" value="70">
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-title">◈ NOTIFICATIONS</div>
+            <div class="setting-row">
+              <div class="setting-label">Sound Effects<small>UI click & notification</small></div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">Response Alert<small>Notify when AI replies</small></div>
+              <div class="toggle" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">Daily Tip<small>AI usage tips</small></div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-title">◈ PRIVACY & DATA</div>
+            <div class="setting-row">
+              <div class="setting-label">Save History<small>Store conversation logs</small></div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">Analytics<small>Help improve Exbotz</small></div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">Clear All Data</div>
+              <button class="top-btn" onclick="showToast('✅ All data cleared!')">CLEAR</button>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">Export Data<small>Download your chats</small></div>
+              <button class="top-btn" onclick="exportData()">EXPORT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PROFILE PANEL ===== -->
+      <div class="panel" id="panel-profile">
+        <div class="profile-panel">
+          <div class="profile-card">
+
+            <!-- AVATAR UPLOAD AREA -->
+            <div style="position:relative;width:90px;margin:0 auto 14px;cursor:pointer" onclick="document.getElementById('avatarUploadInput').click()">
+              <div class="profile-avatar" id="profileAvatar" style="width:90px;height:90px;font-size:38px;overflow:hidden;position:relative">
+                <span id="avatarEmoji">😎</span>
+                <img id="avatarImg" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0">
+              </div>
+              <!-- Camera overlay -->
+              <div style="
+                position:absolute;bottom:0;right:0;
+                width:28px;height:28px;
+                background:linear-gradient(135deg,var(--pk1),var(--bl2));
+                display:flex;align-items:center;justify-content:center;
+                font-size:14px;
+                border:2px solid var(--dark2);
+                box-shadow:var(--glow-pk);
+              ">📷</div>
+              <input type="file" id="avatarUploadInput" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
+            </div>
+            <div style="font-family:var(--pixel);font-size:6px;color:#444;margin-bottom:10px;letter-spacing:1px">CLICK PHOTO TO CHANGE</div>
+
+            <div class="profile-name" id="profileName">USR</div>
+            <div class="profile-email" id="profileEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f88d8b9d8ab89d809a978c82d69991">[email&#160;protected]</a></div>
+
+            <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px">
+              <div class="top-btn" style="cursor:pointer;background:rgba(255,45,155,0.1);border-color:var(--pk1);color:var(--pk1)">◈ PRO MEMBER</div>
+              <div class="top-btn" style="cursor:pointer" onclick="openEditProfile()">✏ EDIT PROFILE</div>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-box">
+                <div class="stat-num" id="statMsgs">247</div>
+                <div class="stat-lbl">Messages</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-num">18</div>
+                <div class="stat-lbl">Images</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-num">12d</div>
+                <div class="stat-lbl">Streak</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="font-family:var(--pixel);font-size:8px;color:var(--bl1);letter-spacing:2px;text-align:center">◈ ACHIEVEMENTS</div>
+          <div class="achv-grid">
+            <div class="achv unlocked"><div class="achv-icon">🚀</div><div class="achv-name">FIRST CHAT</div></div>
+            <div class="achv unlocked"><div class="achv-icon">🔥</div><div class="achv-name">HOT STREAK</div></div>
+            <div class="achv unlocked"><div class="achv-icon">🎨</div><div class="achv-name">ARTIST</div></div>
+            <div class="achv locked"><div class="achv-icon">💎</div><div class="achv-name">DIAMOND</div></div>
+            <div class="achv locked"><div class="achv-icon">🌟</div><div class="achv-name">LEGEND</div></div>
+            <div class="achv locked"><div class="achv-icon">👑</div><div class="achv-name">KING/QUEEN</div></div>
+          </div>
+
+          <button class="btn-primary" onclick="doLogout()" style="width:200px;clip-path:none;background:linear-gradient(135deg,#300,#600)">
+             LOGOUT
+          </button>
+        </div>
+      </div>
+
+    </div><!-- end main-content -->
+  </div><!-- end app-layout -->
+</div><!-- end mainApp -->
+
+<!-- ===== MODALS ===== -->
+<div class="modal-overlay" id="shortcutsModal" data-action="closeModal" data-id="'shortcutsModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" data-action="closeModal" data-id="'shortcutsModal')">×</button>
+    <div class="modal-title">⌨ KEYBOARD SHORTCUTS</div>
+    <div style="display:flex;flex-direction:column;gap:10px;font-family:var(--mono);font-size:13px">
+      <div class="setting-row"><span>Send Message</span><span style="color:var(--bl1);font-family:var(--pixel);font-size:8px">ENTER</span></div>
+      <div class="setting-row"><span>New Line</span><span style="color:var(--bl1);font-family:var(--pixel);font-size:8px">SHIFT+ENTER</span></div>
+      <div class="setting-row"><span>New Chat</span><span style="color:var(--bl1);font-family:var(--pixel);font-size:8px">CTRL+N</span></div>
+      <div class="setting-row"><span>Clear Chat</span><span style="color:var(--bl1);font-family:var(--pixel);font-size:8px">CTRL+K</span></div>
+      <div class="setting-row"><span>Focus Input</span><span style="color:var(--bl1);font-family:var(--pixel);font-size:8px">CTRL+/</span></div>
+      <div class="setting-row"><span>Toggle Sidebar</span><span style="color:var(--bl1);font-family:var(--pixel);font-size:8px">CTRL+B</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EDIT PROFILE MODAL ===== -->
+<div class="modal-overlay" id="editProfileModal" data-action="closeModal" data-id="'editProfileModal')">
+  <div class="modal" onclick="event.stopPropagation()" style="width:380px">
+    <button class="modal-close" data-action="closeModal" data-id="'editProfileModal')">×</button>
+    <div class="modal-title">✏ EDIT PROFILE</div>
+
+    <!-- Photo Preview in modal -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:20px">
+      <div style="position:relative;cursor:pointer" onclick="document.getElementById('avatarUploadInput').click()">
+        <div style="
+          width:80px;height:80px;
+          border:3px solid var(--pk1);
+          box-shadow:var(--glow-pk);
+          overflow:hidden;
+          display:flex;align-items:center;justify-content:center;
+          font-size:32px;
+          background:linear-gradient(135deg,var(--pk4),var(--bl4));
+          position:relative;
+        " id="modalAvatarPreview">
+          <span id="modalAvatarEmoji">😎</span>
+          <img id="modalAvatarImg" src="" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0">
+        </div>
+        <div style="
+          position:absolute;bottom:-4px;right:-4px;
+          background:linear-gradient(135deg,var(--pk1),var(--bl2));
+          width:26px;height:26px;
+          display:flex;align-items:center;justify-content:center;
+          font-size:13px;border:2px solid var(--dark2);
+        ">📷</div>
+      </div>
+      <div style="font-family:var(--pixel);font-size:6px;color:#555;letter-spacing:1px">TAP TO CHANGE PHOTO</div>
+    </div>
+
+    <!-- USERNAME INPUT -->
+    <div class="form-group" style="margin-bottom:8px">
+      <label class="form-label">◈ USERNAME <span style="color:#555">(MIN 3 CHARS)</span></label>
+      <div style="position:relative">
+        <input class="form-input" type="text" id="editUsername" maxlength="20"
+          placeholder="e.g. PixelKing"
+          oninput="this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'');updateUsernameCounter(this.value.length)"
+          style="font-size:16px;font-family:var(--mono);padding-right:60px">
+        <div id="charCounter" style="
+          position:absolute;right:12px;top:50%;transform:translateY(-50%);
+          font-family:var(--pixel);font-size:8px;color:var(--pk1);
+        ">0</div>
+      </div>
+      <div style="font-size:11px;color:#444;margin-top:6px;font-family:var(--mono)">Min 3 characters · Letters, numbers & underscore only · Max 20 chars</div>
+    </div>
+
+    <!-- PREVIEW -->
+    <div style="
+      padding:12px;margin-bottom:16px;
+      border:1px dashed var(--border-pk);
+      background:rgba(255,45,155,0.04);
+      display:flex;align-items:center;gap:12px;
+    ">
+      <div style="font-family:var(--pixel);font-size:8px;color:#444">PREVIEW:</div>
+      <div style="font-family:var(--pixel);font-size:12px;color:var(--pk1);text-shadow:var(--glow-pk);word-break:break-all" id="usernamePreview">Username</div>
+      <div id="previewBadge" style="font-size:10px;color:#555;font-family:var(--mono)">← your display name</div>
+    </div>
+
+    <button class="btn-primary" onclick="saveProfile()" style="clip-path:none">
+      ▶ SAVE CHANGES
     </button>
-
-    <div class="sb-tabs" id="sbTabs">
-      <button class="stab on" onclick="sbTab('history')" id="sbt-history">📜 RIWAYAT</button>
-      <button class="stab" onclick="sbTab('global')" id="sbt-global">🌐 GLOBAL</button>
-      <button class="stab" onclick="sbTab('tools')" id="sbt-tools">⚙ TOOLS</button>
-    </div>
-
-    <!-- History Panel -->
-    <div id="sbp-history" class="ch-list">
-      <div class="ch-item on" onclick="loadChat(this,'chat1')"><span class="ch-icon">💬</span><span class="ch-txt">Percakapan Baru</span></div>
-      <div class="ch-item" onclick="loadChat(this,'chat2')"><span class="ch-icon">🎨</span><span class="ch-txt">Generate gambar pixel</span></div>
-      <div class="ch-item" onclick="loadChat(this,'chat3')"><span class="ch-icon">💻</span><span class="ch-txt">Bantu coding Python</span></div>
-    </div>
-
-    <!-- Global Panel -->
-    <div id="sbp-global" style="display:none;flex-direction:column;flex:1;overflow:hidden;">
-      <div class="gc-online"><div class="odot"></div><span id="onlineCount">3 ONLINE</span></div>
-      <div class="gc-list" id="gcList">
-        <div class="gc-msg"><div class="gc-user">PIXEL_HERO</div>Halo semua! 🎮<div class="gc-time">12:30</div></div>
-        <div class="gc-msg other"><div class="gc-user">SAKURA_99</div>Wah keren banget app ini! ✨<div class="gc-time">12:31</div></div>
-        <div class="gc-msg"><div class="gc-user">GAMEMASTER</div>Exbotz terbaik! 🔥<div class="gc-time">12:32</div></div>
-      </div>
-      <div class="gc-input-wrap">
-        <input class="gc-in" id="gcIn" placeholder="Kirim pesan global..." onkeydown="gcKey(event)">
-        <button class="gc-send" onclick="sendGlobal()">▶</button>
-      </div>
-    </div>
-
-    <!-- Tools Panel -->
-    <div id="sbp-tools" style="display:none;flex-direction:column;flex:1;overflow:hidden;">
-      <div class="tools-grid">
-        <button class="tbtn" id="t-web" onclick="togTool('web','t-web')"><span class="ticon">🔍</span>WEB SEARCH</button>
-        <button class="tbtn" id="t-img" onclick="togTool('img','t-img')"><span class="ticon">🎨</span>IMAGE AI</button>
-        <button class="tbtn" id="t-code" onclick="togTool('code','t-code')"><span class="ticon">💻</span>CODE</button>
-        <button class="tbtn" id="t-tr" onclick="togTool('tr','t-tr')"><span class="ticon">🌐</span>TRANSLATE</button>
-        <button class="tbtn" id="t-math" onclick="togTool('math','t-math')"><span class="ticon">🧮</span>KALKULATOR</button>
-        <button class="tbtn" id="t-sum" onclick="togTool('sum','t-sum')"><span class="ticon">📋</span>RINGKASAN</button>
-        <button class="tbtn" id="t-mai" onclick="togTool('mai','t-mai')"><span class="ticon">🤖</span>MULTI-AI</button>
-        <button class="tbtn" id="t-voice" onclick="togTool('voice','t-voice')"><span class="ticon">🎤</span>VOICE</button>
-      </div>
-    </div>
-
-    <!-- Level & Token Bar -->
-    <div class="lvl-bar" id="lvlBar">
-      <div class="lvl-row">
-        <span class="lvl-txt" id="lvlTxt">LV.1 — 0/100 EXP</span>
-        <span class="tkn-txt" id="tknTxt">🪙 50 TOKEN</span>
-      </div>
-      <div class="exp-bar"><div class="exp-fill" id="expFill" style="width:0%"></div></div>
-      <div class="token-timer" id="tknTimer"></div>
-    </div>
-
-    <!-- User Profile -->
-    <div class="sb-user" onclick="showModal('profileModal')">
-      <div class="uav" id="uav">😀</div>
-      <div id="uinfo">
-        <div class="uname" id="uname">PLAYER_1</div>
-        <div id="uplan" class="uplan">✦ FREE</div>
-      </div>
-    </div>
-  </aside>
-
-  <!-- MAIN CONTENT -->
-  <div class="mc">
-    <div class="topbar">
-      <button class="ib" onclick="togMobSB()">☰</button>
-      <div class="tb-title">EXBOTZ AI</div>
-      <div class="tb-status"><div class="odot"></div>ONLINE</div>
-      <div id="engineBadge" style="font-family:var(--font);font-size:6px;padding:4px 8px;border:1px solid var(--green);color:var(--green);letter-spacing:1px;display:none">⚡ GROQ</div>
-      <select class="msel" id="modelSel">
-        <option value="sonnet">⚡ LLAMA 3.3 70B (TERBAIK)</option>
-        <option value="haiku">🚀 LLAMA 3.1 8B (TERCEPAT)</option>
-        <option value="opus">🌀 MIXTRAL 8X7B (TERPANJANG)</option>
-      </select>
-      <div class="tb-actions">
-        <button class="ib" onclick="showModal('profileModal')" title="Profile">👤</button>
-        <button class="ib" onclick="showModal('payModal')" title="Premium">💎</button>
-        <button class="ib" onclick="showModal('csModal')" title="CS">🎫</button>
-        <button class="ib" id="adminBtn" onclick="showModal('adminModal')" title="Admin" style="display:none">🛡</button>
-        <button class="ib" onclick="exportChat()" title="Export">💾</button>
-        <button class="ib" onclick="clearChat()" title="Hapus">🗑</button>
-        <button class="ib" onclick="doLogout()" title="Logout">⏻</button>
-      </div>
-    </div>
-
-    <!-- Multi AI bar -->
-    <div class="mai-bar" id="maiBar" style="display:none">
-      <span style="font-family:var(--font);font-size:6px;color:var(--dim)">MULTI-AI:</span>
-      <div class="mai-badge idle" id="mai1">🤖 AI-1</div>
-      <div class="mai-badge idle" id="mai2">🧠 AI-2</div>
-      <div class="mai-badge idle" id="mai3">⚡ AI-3</div>
-      <div class="mai-badge idle" id="mai4">🔮 AI-4</div>
-      <div class="mai-badge idle" id="mai5">✨ AI-5</div>
-    </div>
-
-    <!-- Chat Area -->
-    <div class="ca" id="ca">
-      <div class="welcome" id="welcomeDiv">
-        <div class="wart">🤖</div>
-        <div class="wtitle">SELAMAT DATANG DI EXBOTZ!</div>
-        <div class="wsub">AI CANGGIH — MULTI MODEL — PIXEL ART EDITION</div>
-        <div class="sgrid">
-          <div class="sc" onclick="useS('Buatkan kode Python untuk web scraping')"><div class="si">💻</div><div class="st">CODING</div><div class="sd">Bantu buat program</div></div>
-          <div class="sc" onclick="useS('Gambarkan pixel art robot berwarna pink')"><div class="si">🎨</div><div class="st">IMAGE AI</div><div class="sd">Generate gambar pixel</div></div>
-          <div class="sc" onclick="useS('Jelaskan cara kerja machine learning')"><div class="si">🧠</div><div class="st">BELAJAR</div><div class="sd">Pelajari hal baru</div></div>
-          <div class="sc" onclick="useS('Terjemahkan: Hello, how are you today?')"><div class="si">🌐</div><div class="st">TRANSLATE</div><div class="sd">Terjemahkan teks</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Input Area -->
-    <div class="ia">
-      <div class="tkn-warn" id="tknWarn">⚠ TOKEN HAMPIR HABIS! RESET DALAM: <span id="tknWarnTimer"></span></div>
-      <div class="atbar" id="atbar"></div>
-      <div class="upl-prev" id="uplPrev">
-        <img id="uplThumb" src="" alt="">
-        <div class="upl-nm" id="uplName">file.jpg</div>
-        <button class="upl-rm" onclick="rmUpload()">✕</button>
-      </div>
-      <div class="ibox">
-        <div class="iwrap">
-          <textarea id="ci" rows="1" placeholder="Tanya Exbotz apa saja..." onkeydown="ciKey(event)" oninput="ciResize(this)"></textarea>
-          <div class="iacts">
-            <button class="iac" title="Upload"><label>📎<input type="file" id="fi" style="display:none" accept="image/*,.pdf,.txt" onchange="handleFile(event)"></label></button>
-            <button class="iac" onclick="startVoice()" title="Voice">🎤</button>
-            <button class="iac" onclick="togEmoji()" title="Emoji">😊</button>
-          </div>
-        </div>
-        <button class="send-btn" onclick="sendMsg()">▶</button>
-      </div>
-      <div class="ccount" id="ccount">0 / 4000</div>
-    </div>
   </div>
 </div>
 
-<!-- ════ PROFILE MODAL ════ -->
-<div class="mover" id="profileModal">
-  <div class="modal">
-    <div class="pc tl"></div><div class="pc tr"></div><div class="pc bl"></div><div class="pc br"></div>
-    <div class="mtitle">👤 PROFIL PENGGUNA</div>
-    <button class="mclose" onclick="closeModal('profileModal')">✕</button>
-    <div class="stat-grid">
-      <div class="scard"><div class="sval" id="pm-lvl">LV.1</div><div class="slbl2">Level</div></div>
-      <div class="scard"><div class="sval" id="pm-exp">0/100</div><div class="slbl2">EXP</div></div>
-      <div class="scard"><div class="sval" id="pm-tkn">50</div><div class="slbl2">Token</div></div>
-      <div class="scard"><div class="sval" id="pm-chat">0</div><div class="slbl2">Total Chat</div></div>
-    </div>
-    <div class="badge-row" id="pm-badges">
-      <span class="badge lv">LV.1</span>
-      <span class="badge vip">PIXEL USER</span>
-    </div>
-    <hr style="border-color:var(--border);margin:14px 0">
-    <div class="msc">
-      <div class="mlbl">▸ USERNAME</div>
-      <input class="px-in" id="pm-uname" placeholder="Username">
-    </div>
-    <div class="msc">
-      <div class="mlbl">▸ EMAIL</div>
-      <input class="px-in" id="pm-email" placeholder="Email">
-    </div>
-    <div class="msc">
-      <div class="mlbl">▸ PASSWORD BARU (kosongkan jika tidak ingin ganti)</div>
-      <input class="px-in" id="pm-newpass" type="password" placeholder="••••••••">
-    </div>
-    <button class="px-btn" onclick="saveProfile()" style="padding:10px;font-size:7px">💾 SIMPAN PROFIL</button>
-    <hr style="border-color:var(--border);margin:14px 0">
-    <div class="msc">
-      <div class="mlbl">▸ PREFERENSI</div>
-      <div class="trow"><span class="trlbl">✨ Animasi Partikel</span><label class="tog"><input type="checkbox" id="tog-parts" checked onchange="togParts()"><span class="tsl"></span></label></div>
-      <div class="trow"><span class="trlbl">🔊 Suara Notifikasi</span><label class="tog"><input type="checkbox" id="tog-sound"><span class="tsl"></span></label></div>
-      <div class="trow"><span class="trlbl">🌐 Auto Bahasa</span><label class="tog"><input type="checkbox" id="tog-lang" checked><span class="tsl"></span></label></div>
-    </div>
+<div class="modal-overlay" id="toolModal" data-action="closeModal" data-id="'toolModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" data-action="closeModal" data-id="'toolModal')">×</button>
+    <div class="modal-title" id="toolModalTitle">TOOL</div>
+    <div id="toolModalContent"></div>
   </div>
 </div>
 
-<!-- ════ PAYMENT MODAL ════ -->
-<div class="mover" id="payModal">
-  <div class="modal blue-border">
-    <div class="pc tl"></div><div class="pc tr"></div><div class="pc bl"></div><div class="pc br"></div>
-    <div class="mtitle">💎 UPGRADE PREMIUM</div>
-    <button class="mclose" onclick="closeModal('payModal')">✕</button>
-    <div style="font-size:16px;color:var(--dim);margin-bottom:16px;line-height:1.6">Upgrade untuk fitur tanpa batas & bonus token!</div>
-    <div class="plan-cards">
-      <div class="plan" id="plan-basic" onclick="selPlan('basic')">
-        <div class="plan-name">⭐ BASIC</div>
-        <div class="plan-price">Rp 29.000/bln</div>
-        <div class="plan-feats">✓ 500 Token/hari<br>✓ Multi-AI<br>✓ Image AI<br>✓ Badge Biru</div>
-      </div>
-      <div class="plan" id="plan-pro" onclick="selPlan('pro')">
-        <div class="plan-name">👑 PRO</div>
-        <div class="plan-price">Rp 59.000/bln</div>
-        <div class="plan-feats">✓ Unlimited Token<br>✓ Semua Fitur<br>✓ CS Prioritas<br>✓ Badge Gold ✦</div>
-      </div>
-    </div>
-    <div id="pay-detail" style="display:none;margin-top:14px;">
-      <div class="mlbl">▸ METODE BAYAR</div>
-      <select class="px-in" id="pay-method" style="margin-bottom:12px">
-        <option>QRIS / Dana / GoPay / OVO</option>
-        <option>Transfer Bank BCA / BRI / Mandiri</option>
-        <option>Alfamart / Indomaret</option>
-      </select>
-      <div style="font-size:15px;color:var(--dim);margin-bottom:12px;line-height:1.6">Setelah bayar, upload bukti transfer dan kirim ke CS kami. Premium aktif dalam 1x24 jam.</div>
-      <button class="px-btn green" onclick="bayar()" style="padding:10px;font-size:7px">💳 LANJUT BAYAR</button>
-    </div>
-    <div style="font-size:13px;color:var(--dim);margin-top:12px;text-align:center">Butuh bantuan? Hubungi CS kami 🎫</div>
-  </div>
-</div>
-
-<!-- ════ CS MODAL ════ -->
-<div class="mover" id="csModal">
-  <div class="modal">
-    <div class="pc tl"></div><div class="pc tr"></div><div class="pc bl"></div><div class="pc br"></div>
-    <div class="mtitle">🎫 CUSTOMER SERVICE</div>
-    <button class="mclose" onclick="closeModal('csModal')">✕</button>
-    <div class="msc">
-      <div class="mlbl">▸ TIKET AKTIF</div>
-      <div id="ticketList">
-        <div class="ticket">
-          <div class="ticket-hd">
-            <span class="ticket-title">#001 — Pertanyaan Premium</span>
-            <span class="ticket-status open">OPEN</span>
-          </div>
-          <div class="ticket-msg">Halo, saya ingin tanya cara upgrade ke premium...</div>
-          <div class="ticket-reply">Admin: Halo! Silakan pilih paket di menu Premium dan ikuti instruksi pembayaran. Terima kasih! 😊</div>
-        </div>
-      </div>
-    </div>
-    <div class="msc">
-      <div class="mlbl">▸ BUAT TIKET BARU</div>
-      <input class="px-in" id="cs-subj" placeholder="Subjek masalah..." style="margin-bottom:8px">
-      <textarea class="px-in" id="cs-msg" rows="3" placeholder="Ceritakan masalah kamu..." style="resize:vertical"></textarea>
-    </div>
-    <button class="px-btn" onclick="submitTicket()" style="padding:10px;font-size:7px">📨 KIRIM TIKET</button>
-    <div style="font-size:13px;color:var(--dim);margin-top:10px;text-align:center">Respon dalam 1x24 jam (Premium: 1 jam) 💎</div>
-  </div>
-</div>
-
-<!-- ════ ADMIN MODAL ════ -->
-<div class="mover" id="adminModal">
-  <div class="modal blue-border">
-    <div class="pc tl"></div><div class="pc tr"></div><div class="pc bl"></div><div class="pc br"></div>
-    <div class="mtitle">🛡 ADMIN PANEL</div>
-    <button class="mclose" onclick="closeModal('adminModal')">✕</button>
-    <div class="msc">
-      <div class="mlbl">▸ BERI TOKEN KE USER</div>
-      <input class="px-in" id="adm-email" placeholder="Email user target" style="margin-bottom:8px">
-      <input class="px-in" id="adm-tkn" placeholder="Jumlah token" type="number" style="margin-bottom:8px">
-      <button class="px-btn blue" onclick="adminGiveToken()" style="padding:9px;font-size:7px">🪙 BERI TOKEN</button>
-    </div>
-    <div class="msc">
-      <div class="mlbl">▸ HAPUS PESAN GLOBAL</div>
-      <input class="px-in" id="adm-msgid" placeholder="ID pesan" style="margin-bottom:8px">
-      <button class="px-btn" onclick="adminDelMsg()" style="padding:9px;font-size:7px;background:linear-gradient(135deg,#cc0033,#660011)">🗑 HAPUS PESAN</button>
-    </div>
-    <div class="msc">
-      <div class="mlbl">▸ LOG TOKEN</div>
-      <div class="admin-log" id="admLog">
-        <div class="log-entry"><span>12:00</span> — SYSTEM: Reset token harian semua user (+50)</div>
-        <div class="log-entry"><span>11:30</span> — ADMIN: Beri 100 token ke <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4b3e382e397a79780b262a222765282426">[email&#160;protected]</a></div>
-        <div class="log-entry"><span>10:15</span> — SYSTEM: Backup database berhasil</div>
-      </div>
-    </div>
-    <div class="msc">
-      <div class="mlbl">▸ BALASAN TIKET CS</div>
-      <input class="px-in" id="adm-tid" placeholder="ID Tiket (#001)" style="margin-bottom:8px">
-      <textarea class="px-in" id="adm-treply" rows="2" placeholder="Balasan admin..." style="resize:vertical;margin-bottom:8px"></textarea>
-      <button class="px-btn green" onclick="adminReplyTicket()" style="padding:9px;font-size:7px">💬 BALAS TIKET</button>
-    </div>
-  </div>
-</div>
-
-<!-- Credits -->
-<div class="credits-bar">
-  <span class="cr-pink">⚡ EXBOTZ AI</span>
-  <span>|</span>
-  <span class="cr-blue">by</span>
-  <span class="cr-pink">PINLYY</span>
-  <span>|</span>
-  <span>v2.0 PIXEL EDITION</span>
-  <span>|</span>
-  <span class="cr-blue">Gratis Selamanya ✦</span>
-</div>
-
+<!-- ===== JAVASCRIPT ===== -->
 <script>
-// ═══════════════════════════════════════
-// EXBOTZ AI — CORE JAVASCRIPT
-// by pinlyy
-// ═══════════════════════════════════════
-
-// ═══════════════════════════════════════════════
-// ⚡ EXBOTZ AI — KEY AMAN DI VERCEL
-// Tidak ada key di sini — AMAN upload ke GitHub!
-// ═══════════════════════════════════════════════
-
-// Supabase config — diambil otomatis dari /api/config
-let SUPABASE_URL = '';
-let SUPABASE_KEY = '';
-
-// AI dipanggil lewat /api/chat — key ada di Vercel
-const GROQ_MODELS = {
-  sonnet: 'llama-3.3-70b-versatile',
-  haiku:  'llama-3.1-8b-instant',
-  opus:   'mixtral-8x7b-32768',
-};
-
-let activeEngine = 'groq';
-
-// Load config dari Vercel saat startup
-async function loadConfig(){
+// Handle Google OAuth callback (from Supabase redirect)
+(async function(){
   try{
-    const r = await fetch('/api/config');
-    if(r.ok){
-      const d = await r.json();
-      SUPABASE_URL = d.supabaseUrl || '';
-      SUPABASE_KEY = d.supabaseKey || '';
-    }
-  }catch(e){ console.log('Config load error:', e); }
-}
-
-// ── STATE ──
-let user = null;          // {id,name,email,tokens,level,exp,isPremium,isAdmin}
-let msgs = [];            // chat messages
-let activeTools = {};     // enabled tools
-let uploadedFile = null;
-let isTyping = false;
-let partsEnabled = true;
-let chatCount = 0;
-let captchaAns = 0;
-let captchaQ = '';
-let loginAttempts = 0;
-let forgotStep = 1;
-let selectedPlan = null;
-let tokenResetTimer = null;
-let otpTimers = {};
-
-// ── SUPABASE HELPER ──
-async function sbFetch(path, method='GET', body=null, token=null) {
-  if(!SUPABASE_URL) return null;
-  const headers = {
-    'apikey': SUPABASE_KEY,
-    'Content-Type': 'application/json',
-  };
-  if (token) headers['Authorization'] = 'Bearer ' + token;
-  else headers['Authorization'] = 'Bearer ' + SUPABASE_KEY;
-  const opts = { method, headers };
-  if (body) opts.body = JSON.stringify(body);
-  const r = await fetch(SUPABASE_URL + path, opts);
-  return r.json();
-}
-
-// ── PARTICLE SYSTEM ──
-const cv = document.getElementById('px');
-const cx = cv.getContext('2d');
-let parts = [];
-function rsz(){cv.width=innerWidth;cv.height=innerHeight;}
-rsz(); window.addEventListener('resize',rsz);
-class Pt{
-  constructor(){this.r();}
-  r(){this.x=Math.random()*cv.width;this.y=Math.random()*cv.height;this.s=Math.floor(Math.random()*3+1)*2;this.sp=Math.random()*.5+.1;this.c=Math.random()>.5?'#ff2d78':'#00f5ff';this.o=Math.random()*.4+.1;this.vy=-this.sp;this.vx=(Math.random()-.5)*.3;}
-  upd(){this.y+=this.vy;this.x+=this.vx;this.o-=.0008;if(this.y<0||this.o<=0)this.r();}
-  drw(){cx.fillStyle=this.c;cx.globalAlpha=this.o;cx.fillRect(this.x,this.y,this.s,this.s);cx.globalAlpha=1;}
-}
-for(let i=0;i<70;i++)parts.push(new Pt());
-function anim(){cx.clearRect(0,0,cv.width,cv.height);if(partsEnabled)parts.forEach(p=>{p.upd();p.drw();});requestAnimationFrame(anim);}
-anim();
-
-// ── PROGRESS ──
-function pgStart(){
-  const b=document.getElementById('pgbar'),f=document.getElementById('pgfill');
-  b.style.display='block';let w=0;
-  const iv=setInterval(()=>{w+=Math.random()*12;if(w>88)clearInterval(iv);f.style.width=Math.min(w,88)+'%';},180);
-  return{b,f,iv};
-}
-function pgEnd(p){clearInterval(p.iv);p.f.style.width='100%';setTimeout(()=>{p.b.style.display='none';p.f.style.width='0%';},350);}
-
-// ── TOAST ──
-function toast(msg,t=3000){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('on');setTimeout(()=>el.classList.remove('on'),t);}
-
-// ── CAPTCHA ──
-function genCaptcha(inputId){
-  const a=Math.floor(Math.random()*15+1),b=Math.floor(Math.random()*15+1);
-  captchaAns=a+b;captchaQ=`${a} + ${b} = ?`;
-  document.getElementById('cq-login').textContent='🔒 CAPTCHA: '+captchaQ;
-  document.getElementById('captcha-login').classList.add('on');
-}
-function checkCaptcha(){
-  const val=parseInt(document.getElementById('ca-login').value);
-  return val===captchaAns;
-}
-
-// ── OTP SYSTEM (Simulasi — In production pakai Supabase Auth) ──
-function sendOTP(emailId,timerId){
-  const email=document.getElementById(emailId)?.value;
-  if(!email){toast('⚠ Masukkan email dulu!');return;}
-  // In production: call Supabase auth OTP
-  // supabase.auth.signInWithOtp({email})
-  const fakeOTP=''.padStart(6,()=>Math.floor(Math.random()*10));
-  toast(`📧 OTP dikirim ke ${email}! (Demo: 123456)`);
-  // Countdown 60s
-  let sec=60;
-  const timerEl=document.getElementById(timerId);
-  if(timerEl){
-    timerEl.textContent=`Kirim ulang dalam ${sec}s`;
-    const iv=setInterval(()=>{sec--;timerEl.textContent=sec>0?`Kirim ulang dalam ${sec}s`:'';if(sec<=0)clearInterval(iv);},1000);
-  }
-}
-
-// ── AUTH TAB ──
-function authTab(t){
-  document.querySelectorAll('.atab').forEach(el=>el.classList.remove('on'));
-  document.querySelectorAll('.fpanel').forEach(el=>el.classList.remove('on'));
-  if(t==='login'){document.getElementById('tab-login').classList.add('on');document.getElementById('p-login').classList.add('on');}
-  else if(t==='reg'){document.getElementById('tab-reg').classList.add('on');document.getElementById('p-reg').classList.add('on');}
-  else if(t==='forgot'){document.getElementById('tab-login').classList.add('on');document.getElementById('p-forgot').classList.add('on');forgotStep=1;}
-}
-
-// ── LOGIN ──
-async function doLogin(){
-  const email=document.getElementById('li-email').value.trim();
-  const pass=document.getElementById('li-pass').value;
-  if(!email||!pass){toast('⚠ Isi email & password!');return;}
-  loginAttempts++;
-  if(loginAttempts>=3){
-    genCaptcha('ca-login');
-    const cap=document.getElementById('ca-login').value;
-    if(!cap){toast('⚠ Selesaikan captcha!');return;}
-    if(!checkCaptcha()){toast('⚠ Captcha salah!');genCaptcha('ca-login');return;}
-  }
-  const pg=pgStart();
-  try{
-    const res=await fetch('/api/auth',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'login', email, password:pass})
-    });
-    const data=await res.json();
-    pgEnd(pg);
-    if(data.error){toast('⚠ '+(data.error||'Login gagal! Cek email & password.'));return;}
-    user={
-      id: data.id||'u-'+Date.now(),
-      name: (data.name||email.split('@')[0]).toUpperCase(),
-      email, tokens: data.tokens||50, level: data.level||1,
-      exp: data.exp||0, isPremium: data.is_premium||false,
-      isAdmin: data.is_admin||false, token: data.access_token||''
-    };
-    loginAttempts=0;
-    enterApp();
-  }catch(e){
-    pgEnd(pg);
-    toast('⚠ Koneksi gagal. Cek internet dan coba lagi!');
-  }
-}
-
-function demoLogin(email){
-  // Demo mode dihapus - tampilkan error
-  toast('⚠ Login gagal! Cek email & password, atau daftar dulu.');
-}
-
-async function loadUserProfile(token, uid){
-  try{
-    const data=await sbFetch(`/rest/v1/users?id=eq.${uid}&select=*`,'GET',null,token);
-    if(data&&data[0]){
-      user={...data[0],token};
-    }else{
-      // Create new user profile
-      user={id:uid,name:'PLAYER_'+Math.floor(Math.random()*999),email:'',tokens:50,level:1,exp:0,isPremium:false,isAdmin:false,token};
-      await sbFetch('/rest/v1/users','POST',{id:uid,name:user.name,tokens:50,level:1,exp:0,is_premium:false,is_admin:false},token);
-    }
-  }catch(e){console.log('Profile load err:',e);}
-}
-
-// ── REGISTER ──
-async function doRegister(){
-  const name=document.getElementById('r-name').value.trim();
-  const email=document.getElementById('r-email').value.trim();
-  const pass=document.getElementById('r-pass').value;
-  const pass2=document.getElementById('r-pass2').value;
-  const otp=document.getElementById('r-otp').value.trim();
-  if(!name||!email||!pass||!pass2){toast('⚠ Isi semua field!');return;}
-  if(pass!==pass2){toast('⚠ Password tidak cocok!');return;}
-  if(pass.length<8){toast('⚠ Password min 8 karakter!');return;}
-  if(otp.length<6){toast('⚠ Masukkan OTP 6 digit!');return;}
-  // Demo: OTP 123456
-  if(otp!=='123456'&&otp!==getStoredOTP(email)){toast('⚠ OTP salah! (Demo: 123456)');return;}
-  const pg=pgStart();
-  try{
-    const res=await fetch('/api/auth',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'register', email, password:pass, name})
-    });
-    const data=await res.json();
-    pgEnd(pg);
-
-    if(data.error){toast('⚠ '+(data.error||'Register gagal. Email mungkin sudah dipakai!'));return;}
-    user={id:data.id||'u-'+Date.now(),name:name.toUpperCase(),email,tokens:50,level:1,exp:0,isPremium:false,isAdmin:false};
-    toast('✓ Akun berhasil dibuat! Token awal: 50 🪙');
-    setTimeout(()=>enterApp(),700);
-  }catch(e){pgEnd(pg);toast('⚠ Register gagal. Cek koneksi internet!');}
-}
-function getStoredOTP(email){return '123456';}// In prod: check DB
-
-// ── FORGOT PASSWORD ──
-async function doForgot(){
-  if(forgotStep===1){
-    const email=document.getElementById('fp-email').value.trim();
-    if(!email){toast('⚠ Masukkan email!');return;}
-    sendOTP('fp-email','');
-    document.getElementById('fp-otp-wrap').style.display='block';
-    document.getElementById('fp-btn').textContent='✓ VERIFIKASI OTP';
-    forgotStep=2;
-  }else if(forgotStep===2){
-    const otp=document.getElementById('fp-otp').value.trim();
-    if(otp!=='123456'){toast('⚠ OTP salah! (Demo: 123456)');return;}
-    document.getElementById('fp-pass-wrap').style.display='block';
-    document.getElementById('fp-btn').textContent='🔑 GANTI PASSWORD';
-    forgotStep=3;
-  }else{
-    const np=document.getElementById('fp-newpass').value;
-    if(np.length<8){toast('⚠ Password min 8 karakter!');return;}
-    toast('✓ Password berhasil direset!');
-    authTab('login');
-    forgotStep=1;
-  }
-}
-
-// ── GOOGLE LOGIN ──
-async function doGoogle(){
-  // Redirect ke Supabase Google OAuth — user pilih akun Google dulu
-  try{
-    const res = await fetch('/api/config');
-    const cfg = await res.json();
-    if(!cfg.supabaseUrl){
-      toast('⚠ Supabase belum dikonfigurasi!');
-      return;
-    }
-    // Redirect ke halaman pilih akun Google
-    const redirectTo = encodeURIComponent(window.location.origin + '/auth/callback');
-    window.location.href = cfg.supabaseUrl + '/auth/v1/authorize?provider=google&redirect_to=' + redirectTo + '&prompt=select_account';
-  }catch(e){
-    toast('⚠ Google login gagal. Cek koneksi!');
-  }
-}
-
-// ── ENTER APP ──
-function enterApp(){
-  loadConfig();
-  document.getElementById('authS').classList.remove('on');
-  document.getElementById('appS').classList.add('on');
-  document.getElementById('uname').textContent=user.name;
-  document.getElementById('uav').textContent=['😎','🤖','👾','🎮','⚡','🦾'][Math.floor(Math.random()*6)];
-  updateUI();
-  if(user.isAdmin){document.getElementById('adminBtn').style.display='';}
-  startTokenTimer();
-  startOnlineTimer();
-  loadChatHistory();
-}
-
-function updateUI(){
-  document.getElementById('tknTxt').textContent=`🪙 ${user.tokens} TOKEN`;
-  document.getElementById('lvlTxt').textContent=`LV.${user.level} — ${user.exp}/${user.level*100} EXP`;
-  document.getElementById('expFill').style.width=`${(user.exp/(user.level*100))*100}%`;
-  document.getElementById('uplan').className=user.isPremium?'uprem':'uplan';
-  document.getElementById('uplan').textContent=user.isPremium?'✦ PREMIUM 💚':'✦ FREE';
-  // Profile modal
-  document.getElementById('pm-lvl').textContent='LV.'+user.level;
-  document.getElementById('pm-exp').textContent=`${user.exp}/${user.level*100}`;
-  document.getElementById('pm-tkn').textContent=user.tokens;
-  document.getElementById('pm-chat').textContent=chatCount;
-  document.getElementById('pm-uname').value=user.name;
-  document.getElementById('pm-email').value=user.email;
-  // Badges
-  const brow=document.getElementById('pm-badges');
-  brow.innerHTML=`<span class="badge lv">LV.${user.level}</span>`;
-  if(user.isPremium)brow.innerHTML+=`<span class="badge prem">✦ PREMIUM</span>`;
-  if(user.level>=5)brow.innerHTML+=`<span class="badge vip">VETERAN</span>`;
-  // Token warning
-  const warn=document.getElementById('tknWarn');
-  warn.classList.toggle('on',user.tokens<=5&&user.tokens>0);
-}
-
-// ── TOKEN SYSTEM ──
-let tokenResetInterval=null;
-let nextResetTime=null;
-
-function startTokenTimer(){
-  // Reset token tiap 3 jam
-  nextResetTime=new Date(Date.now()+3*60*60*1000);
-  updateTokenTimer();
-  tokenResetInterval=setInterval(()=>{
-    const now=new Date();
-    if(now>=nextResetTime){
-      user.tokens=user.isPremium?500:50;
-      nextResetTime=new Date(Date.now()+3*60*60*1000);
-      toast('🎉 Token direset! +'+( user.isPremium?500:50));
-      logAdmin(`Token reset: ${user.name} (${user.isPremium?'Premium':'Free'})`);
-      updateUI();
-    }
-    updateTokenTimer();
-  },1000);
-}
-
-function updateTokenTimer(){
-  if(!nextResetTime)return;
-  const diff=Math.max(0,nextResetTime-Date.now());
-  const h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
-  const txt=`RESET TOKEN: ${h}j ${m}m ${s}s`;
-  document.getElementById('tknTimer').textContent=txt;
-  document.getElementById('tknWarnTimer').textContent=`${h}j ${m}m ${s}s`;
-}
-
-function useToken(amt=1){
-  if(user.tokens<amt){toast('⚠ Token habis! Tunggu reset atau upgrade Premium!');return false;}
-  user.tokens-=amt;
-  updateUI();
-  saveUserData();
-  return true;
-}
-
-function gainExp(amt=10){
-  user.exp+=amt;
-  const needed=user.level*100;
-  if(user.exp>=needed){user.level++;user.exp=user.exp-needed;user.tokens+=10;toast(`🎉 LEVEL UP! LV.${user.level} — +10 Token! 🪙`);logAdmin(`Level up: ${user.name} → LV.${user.level}`);}
-  updateUI();
-  saveUserData();
-}
-
-async function saveUserData(){
-  if(!user?.id)return;
-  try{
-    await fetch('/api/auth',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'update',id:user.id,tokens:user.tokens,level:user.level,exp:user.exp,is_premium:user.isPremium,token:user.token||''})
-    });
-  }catch(e){}
-}
-
-// ── ONLINE TIMER ──
-function startOnlineTimer(){
-  setInterval(()=>{
-    const n=Math.floor(Math.random()*8+2);
-    document.getElementById('onlineCount').textContent=n+' ONLINE';
-  },30000);
-}
-
-// ── SIDEBAR ──
-let sbCollapsed=false;
-function togSB(){
-  sbCollapsed=!sbCollapsed;
-  const s=document.getElementById('sb');
-  s.classList.toggle('col',sbCollapsed);
-  document.getElementById('sbTog').textContent=sbCollapsed?'▶':'◀';
-  ['sbLogo','ncTxt'].forEach(id=>document.getElementById(id).style.display=sbCollapsed?'none':'');
-  document.getElementById('sbTabs').style.display=sbCollapsed?'none':'';
-  document.getElementById('lvlBar').style.display=sbCollapsed?'none':'';
-  document.getElementById('uinfo').style.display=sbCollapsed?'none':'';
-  document.querySelectorAll('.ch-txt').forEach(e=>e.style.display=sbCollapsed?'none':'');
-}
-function togMobSB(){
-  const sb=document.getElementById('sb');
-  const ov=document.getElementById('sbOverlay');
-  sb.classList.toggle('mob');
-  ov.classList.toggle('on',sb.classList.contains('mob'));
-}
-function closeMobSB(){
-  document.getElementById('sb').classList.remove('mob');
-  document.getElementById('sbOverlay').classList.remove('on');
-}
-
-let curSBTab='history';
-function sbTab(t){
-  curSBTab=t;
-  ['history','global','tools'].forEach(x=>{
-    document.getElementById('sbt-'+x).classList.toggle('on',x===t);
-    const p=document.getElementById('sbp-'+x);
-    if(p)p.style.display=x===t?'flex':'none';
-    const pl=document.getElementById('sbp-'+x);
-    if(pl&&x!==t)pl.style.display='none';
-  });
-  if(t==='history')document.getElementById('sbp-history').style.display='block';
-}
-
-// ── TOOLS ──
-const toolNames={web:'🔍 WEB SEARCH',img:'🎨 IMAGE AI',code:'💻 CODE',tr:'🌐 TRANSLATE',math:'🧮 KALKULATOR',sum:'📋 RINGKASAN',mai:'🤖 MULTI-AI',voice:'🎤 VOICE'};
-function togTool(id,btnId){
-  const btn=document.getElementById(btnId);
-  if(activeTools[id]){delete activeTools[id];btn.classList.remove('on');}
-  else{activeTools[id]=true;btn.classList.add('on');}
-  if(id==='mai'){document.getElementById('maiBar').style.display=activeTools.mai?'flex':'none';}
-  updateAtBar();
-}
-function updateAtBar(){
-  const bar=document.getElementById('atbar');
-  bar.innerHTML=Object.keys(activeTools).map(t=>
-    `<div class="at-badge">${toolNames[t]||t}<span class="at-x" onclick="togTool('${t}','t-${t}')">✕</span></div>`
-  ).join('');
-}
-
-// ── GLOBAL CHAT ──
-const badWords=['anjing','babi','kontol','memek','bangsat','tolol','bodoh','goblok'];
-function filterMsg(txt){
-  let r=txt;
-  badWords.forEach(w=>{const re=new RegExp(w,'gi');r=r.replace(re,'*'.repeat(w.length));});
-  return r;
-}
-function gcKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendGlobal();}}
-function sendGlobal(){
-  const inp=document.getElementById('gcIn');
-  const txt=inp.value.trim();
-  if(!txt)return;
-  const clean=filterMsg(txt);
-  inp.value='';
-  const time=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-  const div=document.createElement('div');
-  div.className='gc-msg';
-  div.innerHTML=`<div class="gc-user">${user?.name||'GUEST'}</div>${clean}<div class="gc-time">${time}</div>`;
-  document.getElementById('gcList').appendChild(div);
-  document.getElementById('gcList').scrollTop=9999;
-  // In production: save to Supabase realtime
-}
-
-// ── CHAT FUNCTIONS ──
-function loadChatHistory(){}// In prod: load from Supabase
-function loadChat(el,id){
-  document.querySelectorAll('.ch-item').forEach(i=>i.classList.remove('on'));
-  el.classList.add('on');
-}
-function newChat(){
-  msgs=[];
-  const ca=document.getElementById('ca');
-  ca.innerHTML=`<div class="welcome" id="welcomeDiv"><div class="wart">🤖</div><div class="wtitle">EXBOTZ SIAP!</div><div class="wsub">MULAI PERCAKAPAN BARU...</div></div>`;
-  const item=document.createElement('div');
-  item.className='ch-item on';
-  item.innerHTML='<span class="ch-icon">💬</span><span class="ch-txt">Percakapan Baru</span>';
-  item.onclick=function(){loadChat(this,'new');};
-  document.getElementById('sbp-history').prepend(item);
-  document.querySelectorAll('.ch-item').forEach(i=>i.classList.remove('on'));
-  item.classList.add('on');
-}
-function ciKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
-function ciResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';document.getElementById('ccount').textContent=`${el.value.length} / 4000`;}
-
-function useS(txt){document.getElementById('ci').value=txt;sendMsg();}
-
-async function sendMsg(){
-  const inp=document.getElementById('ci');
-  const txt=inp.value.trim();
-  if(!txt&&!uploadedFile)return;
-  if(isTyping)return;
-  if(!user){toast('⚠ Login dulu untuk chat!');return;}
-  // Token cost
-  const cost=activeTools.img?3:activeTools.mai?5:1;
-  if(!user.isPremium&&!useToken(cost))return;
-
-  const wd=document.getElementById('welcomeDiv');
-  if(wd)wd.remove();
-
-  const utxt=txt||'[File dikirim]';
-  msgs.push({role:'user',content:utxt});
-  appendMsg('user',utxt);
-  inp.value='';inp.style.height='auto';
-  document.getElementById('ccount').textContent='0 / 4000';
-  rmUpload();
-
-  // Update sidebar history
-  const ach=document.querySelector('.ch-item.on .ch-txt');
-  if(ach&&ach.textContent==='Percakapan Baru'&&txt)ach.textContent=txt.slice(0,26)+(txt.length>26?'...':'');
-
-  if(activeTools.mai){
-    await sendMultiAI(utxt);
-  }else{
-    appendTyping();
-    isTyping=true;
-    const reply=await callAI(utxt);
-    removeTyping();
-    updateEngineBadge();
-    msgs.push({role:'assistant',content:reply});
-    appendMsg('bot',reply);
-    isTyping=false;
-  }
-  chatCount++;
-  gainExp(5);
-  // Save to Supabase
-  saveChatToDB(utxt,msgs[msgs.length-1]?.content||'');
-}
-
-// ── SYSTEM PROMPT BUILDER ──
-function buildSysPrompt(){
-  let sys=`Kamu adalah Exbotz, AI asisten canggih yang dibuat oleh pinlyy. Kamu memiliki kepribadian yang energetik, ramah, dan sangat membantu. Gunakan emoji sesekali. Jawab dalam bahasa yang sama dengan pertanyaan user. Jangan pernah menyebut nama model AI aslimu (Llama, Gemini, dll) — kamu hanya EXBOTZ.`;
-  if(activeTools.code)sys+=' Mode CODE: prioritaskan kode bersih, terdokumentasi, siap pakai.';
-  if(activeTools.tr)sys+=' Mode TRANSLATE: terjemahkan teks dengan akurat dan natural.';
-  if(activeTools.math)sys+=' Mode KALKULATOR: jelaskan langkah perhitungan secara detail.';
-  if(activeTools.sum)sys+=' Mode RINGKASAN: buat ringkasan padat, terstruktur, dan mudah dipahami.';
-  if(activeTools.web)sys+=' Web search aktif: berikan info terkini dan relevan.';
-  if(activeTools.img)sys+=' Image AI aktif: Ketika user minta gambar, WAJIB balas dengan format: [IMG:deskripsi gambar dalam bahasa Inggris yang detail]. Contoh: [IMG:a cute robot eating noodles, pixel art style, colorful, HD]. Setelah itu tambahkan penjelasan singkat dalam bahasa Indonesia.';
-  return sys;
-}
-
-// ── GROQ API (ENGINE UTAMA — GRATIS 14.400 req/hari) ──
-// ── SEMUA AI DIPANGGIL LEWAT /api/chat (KEY AMAN DI VERCEL) ──
-async function callAI(txt, sysOverride=null){
-  const sys = sysOverride || buildSysPrompt();
-  const model = GROQ_MODELS[document.getElementById('modelSel')?.value||'sonnet'] || GROQ_MODELS.sonnet;
-  try{
-    const r = await fetch('/api/chat', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        messages: msgs.slice(-12).map(m=>({role:m.role, content:m.content})),
-        system: sys,
-        model: model
-      })
-    });
-    if(!r.ok) throw new Error('api_error');
-    const d = await r.json();
-    // Support Groq / OpenAI format
-    if(d.choices?.[0]?.message?.content){
-      activeEngine = d._engine || 'groq';
-      return d.choices[0].message.content;
-    }
-    // Support Gemini format
-    if(d.candidates?.[0]?.content?.parts?.[0]?.text){
-      activeEngine = 'gemini';
-      return d.candidates[0].content.parts[0].text;
-    }
-    throw new Error('no_response');
-  }catch(e){
-    console.warn('AI error:', e.message);
-    activeEngine = 'error';
-    return demoReply(txt);
-  }
-}
-
-// ── ALIAS untuk kompatibilitas kode lama ──
-async function callClaude(txt){ return callAI(txt); }
-
-function updateEngineBadge(){
-  const b=document.getElementById('engineBadge');
-  if(!b)return;
-  const labels={groq:'⚡ GROQ',gemini:'🌟 GEMINI',openrouter:'🔁 OPENROUTER'};
-  const colors={groq:'var(--green)',gemini:'var(--blue)',openrouter:'var(--yellow)'};
-  b.textContent=labels[activeEngine]||'⚡ AI';
-  b.style.borderColor=colors[activeEngine]||'var(--green)';
-  b.style.color=colors[activeEngine]||'var(--green)';
-  b.style.display='';
-}
-
-function demoReply(txt){
-  return '⚠ AI tidak tersedia saat ini. Pastikan GROQ_KEY sudah diisi di Vercel Environment Variables.';
-}
-
-async function sendMultiAI(txt){
-  const aiList=[
-    {id:'mai1',name:'AI-1 ANALYST',emoji:'🤖',style:'Kamu adalah AI Analis. Jawab dengan analisis mendalam dan terstruktur.'},
-    {id:'mai2',name:'AI-2 CREATIVE',emoji:'🧠',style:'Kamu adalah AI Kreatif. Jawab dengan sudut pandang kreatif dan tidak biasa.'},
-    {id:'mai3',name:'AI-3 SIMPLE',emoji:'⚡',style:'Kamu adalah AI Simpel. Jawab singkat, padat, dan langsung ke intinya.'},
-    {id:'mai4',name:'AI-4 CRITICAL',emoji:'🔮',style:'Kamu adalah AI Kritis. Jawab dengan sudut pandang kritis dan pertimbangkan pro-kontra.'},
-    {id:'mai5',name:'AI-5 FRIENDLY',emoji:'✨',style:'Kamu adalah AI Ramah. Jawab dengan hangat, santai, dan penuh semangat.'},
-  ];
-  const ca=document.getElementById('ca');
-  const wrap=document.createElement('div');
-  wrap.className='msg bot';
-  wrap.style.cssText='flex-direction:column;max-width:100%;';
-  wrap.innerHTML=`<div style="font-family:var(--font);font-size:7px;color:var(--yellow);margin-bottom:10px;letter-spacing:1px">🤖 MULTI-AI MODE — 5 PERSPEKTIF AKTIF</div>`;
-  ca.appendChild(wrap);
-
-  for(let i=0;i<aiList.length;i++){
-    const ai=aiList[i];
-    document.getElementById(ai.id).className='mai-badge working';
-    const sys=buildSysPrompt()+' '+ai.style+' Jangan pernah sebut nama model aslimu.';
-    const resp=await callAI(txt,sys);
-    document.getElementById(ai.id).className='mai-badge done';
-    const rd=document.createElement('div');
-    rd.className='mai-resp';
-    rd.innerHTML=`<div class="mai-resp-hd">${ai.emoji} ${ai.name}</div>${fmtMsg(resp)}`;
-    wrap.appendChild(rd);
-    ca.scrollTop=9999;
-    await new Promise(r=>setTimeout(r,300));
-  }
-  aiList.forEach(a=>document.getElementById(a.id).className='mai-badge idle');
-}
-
-function fmtMsg(txt){
-  // Render Image AI - [IMG:prompt]
-  txt = txt.replace(/\[IMG:([^\]]+)\]/g, function(match, prompt){
-    var enc = encodeURIComponent(prompt.trim());
-    var seed = Math.floor(Math.random()*99999);
-    var url = 'https://image.pollinations.ai/prompt/'+enc+'?width=512&height=512&seed='+seed+'&nologo=true&enhance=true&model=flux';
-    return '<div style="margin:10px 0"><div class="img-status" style="font-family:var(--font);font-size:6px;color:var(--pink);margin-bottom:6px">🎨 GENERATING IMAGE...</div><img src="'+url+'" style="max-width:100%;border:2px solid var(--pink);display:block;border-radius:2px" onload="this.previousElementSibling.textContent=\'🎨 IMAGE AI — HD ✓\';" onerror="this.previousElementSibling.textContent=\'⚠ Gagal, coba lagi\';" alt="'+prompt+'"><div style="font-size:12px;color:var(--dim);margin-top:4px;font-style:italic">'+prompt+'</div></div>';
-  });
-  // Code blocks
-  txt = txt.replace(/```[\w]*\n?([\s\S]*?)```/g, '<div class="code-bl">$1</div>');
-  // Bold
-  txt = txt.replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--pink)">$1</strong>');
-  // Italic
-  txt = txt.replace(/\*(.*?)\*/g, '<em style="color:var(--blue)">$1</em>');
-  // Newlines
-  txt = txt.replace(/\n/g, '<br>');
-  return txt;
-}
-
-async function sendMultiAI(txt){
-  const aiList=[
-    {id:'mai1',name:'AI-1 ANALYST',emoji:'🤖',style:'Kamu adalah AI Analis. Jawab dengan analisis mendalam dan terstruktur.'},
-    {id:'mai2',name:'AI-2 CREATIVE',emoji:'🧠',style:'Kamu adalah AI Kreatif. Jawab dengan sudut pandang kreatif dan tidak biasa.'},
-    {id:'mai3',name:'AI-3 SIMPLE',emoji:'⚡',style:'Kamu adalah AI Simpel. Jawab singkat, padat, dan langsung ke intinya.'},
-    {id:'mai4',name:'AI-4 CRITICAL',emoji:'🔮',style:'Kamu adalah AI Kritis. Jawab dengan sudut pandang kritis dan pertimbangkan pro-kontra.'},
-    {id:'mai5',name:'AI-5 FRIENDLY',emoji:'✨',style:'Kamu adalah AI Ramah. Jawab dengan hangat, santai, dan penuh semangat.'},
-  ];
-  const ca=document.getElementById('ca');
-  const wrap=document.createElement('div');
-  wrap.className='msg bot';
-  wrap.style.cssText='flex-direction:column;max-width:100%;';
-  wrap.innerHTML=`<div style="font-family:var(--font);font-size:7px;color:var(--yellow);margin-bottom:10px;letter-spacing:1px">🤖 MULTI-AI MODE — 5 PERSPEKTIF AKTIF</div>`;
-  ca.appendChild(wrap);
-
-  for(let i=0;i<aiList.length;i++){
-    const ai=aiList[i];
-    document.getElementById(ai.id).className='mai-badge working';
-    const sys=buildSysPrompt()+' '+ai.style+' Jangan pernah sebut nama model aslimu.';
-    const resp=await callAI(txt,sys);
-    document.getElementById(ai.id).className='mai-badge done';
-    const rd=document.createElement('div');
-    rd.className='mai-resp';
-    rd.innerHTML=`<div class="mai-resp-hd">${ai.emoji} ${ai.name}</div>${fmtMsg(resp)}`;
-    wrap.appendChild(rd);
-    ca.scrollTop=9999;
-    await new Promise(r=>setTimeout(r,300));
-  }
-  aiList.forEach(a=>document.getElementById(a.id).className='mai-badge idle');
-}
-
-function fmtMsg(txt){
-  return txt
-    // Render Image AI dari Pollinations (gratis, HD)
-    .replace(/\[IMG:(.*?)\]/g, (match, prompt) => {
-      const enc = encodeURIComponent(prompt.trim());
-      const seed = Math.floor(Math.random()*99999);
-      const url = `https://image.pollinations.ai/prompt/${enc}?width=512&height=512&seed=${seed}&nologo=true&enhance=true`;
-      return `<div style="margin:10px 0">
-        <div style="font-family:var(--font);font-size:6px;color:var(--pink);margin-bottom:6px">🎨 GENERATING IMAGE...</div>
-        <img src="${url}" style="max-width:100%;border:2px solid var(--pink);display:block;image-rendering:auto" 
-          onload="this.previousElementSibling.textContent='🎨 IMAGE AI — HD'"
-          onerror="this.previousElementSibling.textContent='⚠ Gagal load gambar'"
-          alt="${prompt}">
-        <div style="font-size:12px;color:var(--dim);margin-top:4px">${prompt}</div>
-      </div>`;
-    })
-    .replace(/\`\`\`[\w]*\n?([\s\S]*?)\`\`\`/g,'<div class="code-bl">$1</div>')
-    .replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--pink)">$1</strong>')
-    .replace(/\*(.*?)\*/g,'<em style="color:var(--blue)">$1</em>')
-    .replace(/\n/g,'<br>');
-}
-
-function appendMsg(role,txt){
-  const ca=document.getElementById('ca');
-  const isBot=role==='bot';
-  const time=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-  const div=document.createElement('div');
-  div.className=`msg ${isBot?'bot':'u'}`;
-  div.innerHTML=`
-    <div class="mav">${isBot?'🤖':(document.getElementById('uav').textContent||'😀')}</div>
-    <div class="mc2">
-      <div class="mhd">
-        <span class="mname ${isBot?'bot':'u'}">${isBot?'EXBOTZ':(user?.name||'YOU')}</span>
-        <span class="mtime">${time}</span>
-      </div>
-      <div class="mbub">${fmtMsg(txt)}</div>
-      <div class="macts">
-        <button class="mab" onclick="copyM(this)">📋 COPY</button>
-        ${isBot?'<button class="mab" onclick="regenM()">🔄 ULANG</button>':''}
-        <button class="mab" onclick="likeM(this)">👍</button>
-      </div>
-    </div>`;
-  ca.appendChild(div);ca.scrollTop=9999;
-}
-
-function appendTyping(){
-  const ca=document.getElementById('ca');
-  const div=document.createElement('div');
-  div.className='msg bot';div.id='typingDiv';
-  div.innerHTML=`<div class="mav">🤖</div><div class="mc2"><div class="mhd"><span class="mname bot">EXBOTZ</span></div><div class="typing"><span></span><span></span><span></span></div></div>`;
-  ca.appendChild(div);ca.scrollTop=9999;
-}
-function removeTyping(){const t=document.getElementById('typingDiv');if(t)t.remove();}
-
-function copyM(btn){const bub=btn.closest('.mc2').querySelector('.mbub');navigator.clipboard.writeText(bub.innerText);toast('📋 Disalin!');}
-function likeM(btn){btn.textContent='❤️';btn.style.color='var(--pink)';}
-async function regenM(){
-  if(msgs.length<1)return;
-  if(msgs[msgs.length-1]?.role==='assistant')msgs.pop();
-  const ca=document.getElementById('ca');
-  const botMsgs=ca.querySelectorAll('.msg.bot');
-  if(botMsgs.length)botMsgs[botMsgs.length-1].remove();
-  appendTyping();isTyping=true;
-  const lastU=msgs[msgs.length-1]?.content||'';
-  const r=await callAI(lastU);
-  removeTyping();updateEngineBadge();msgs.push({role:'assistant',content:r});appendMsg('bot',r);isTyping=false;
-}
-
-function clearChat(){if(confirm('Hapus semua chat?')){msgs=[];newChat();toast('🗑 Chat dihapus!');}}
-function exportChat(){
-  if(!msgs.length){toast('⚠ Tidak ada chat!');return;}
-  const c=msgs.map(m=>`[${m.role.toUpperCase()}]\n${m.content}`).join('\n\n---\n\n');
-  const b=new Blob([`EXBOTZ AI EXPORT\nby pinlyy\n${'='.repeat(40)}\n\n${c}`],{type:'text/plain'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`exbotz-${Date.now()}.txt`;a.click();
-  toast('💾 Diekspor!');
-}
-
-// ── SAVE CHAT TO DB ──
-async function saveChatToDB(q,a){
-  if(!user?.id)return;
-  try{
-    await fetch('/api/auth',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'saveChat',user_id:user.id,question:q,answer:a,token:user.token||''})
-    });
-  }catch(e){}
-}
-
-// ── FILE UPLOAD ──
-function handleFile(e){
-  const f=e.target.files[0];if(!f)return;
-  uploadedFile=f;
-  const prev=document.getElementById('uplPrev');
-  prev.style.display='flex';document.getElementById('uplName').textContent=f.name;
-  if(f.type.startsWith('image/')){const r=new FileReader();r.onload=ev=>document.getElementById('uplThumb').src=ev.target.result;r.readAsDataURL(f);}
-}
-function rmUpload(){uploadedFile=null;document.getElementById('uplPrev').style.display='none';document.getElementById('fi').value='';}
-
-// ── VOICE ──
-function startVoice(){
-  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){toast('⚠ Browser tidak mendukung voice input!');return;}
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  const rec=new SR();rec.lang='id-ID';rec.interimResults=false;rec.start();
-  document.getElementById('vind').classList.add('on');
-  rec.onresult=e=>{document.getElementById('ci').value=e.results[0][0].transcript;stopVoice();};
-  rec.onerror=()=>{stopVoice();toast('⚠ Voice error');};
-  rec.onend=()=>stopVoice();
-  window._rec=rec;
-}
-function stopVoice(){document.getElementById('vind').classList.remove('on');try{window._rec?.stop();}catch(e){}}
-
-// ── EMOJI ──
-const emjs=['😀','😎','🤩','❤️','🔥','⚡','✨','🎮','🎨','💻','🚀','🌟','💎','🎯','🏆','💡','🤖','👾','🎭','🌈','🦄','💜','💙','🩷','❗','❓','🎉','🎊'];
-const ep=document.getElementById('empick');
-emjs.forEach(e=>{const b=document.createElement('div');b.textContent=e;b.style.cssText='cursor:pointer;font-size:18px;padding:4px;text-align:center;transition:.15s;';b.onmouseover=()=>b.style.transform='scale(1.3)';b.onmouseout=()=>b.style.transform='scale(1)';b.onclick=()=>{document.getElementById('ci').value+=e;ep.style.display='none';};ep.appendChild(b);});
-function togEmoji(){ep.style.display=ep.style.display==='grid'?'none':'grid';}
-document.addEventListener('click',e=>{if(!e.target.closest('#empick')&&!e.target.closest('.iac'))ep.style.display='none';});
-
-// ── MODALS ──
-function showModal(id){document.getElementById(id).classList.add('on');}
-function closeModal(id){document.getElementById(id).classList.remove('on');}
-
-// ── PROFILE ──
-function saveProfile(){
-  const n=document.getElementById('pm-uname').value.trim();
-  if(n&&user){user.name=n.toUpperCase();document.getElementById('uname').textContent=user.name;}
-  const np=document.getElementById('pm-newpass').value;
-  if(np&&np.length>=8){toast('✓ Password diperbarui!');}
-  saveUserData();
-  toast('✓ Profil disimpan!');
-  closeModal('profileModal');
-}
-function togParts(){partsEnabled=document.getElementById('tog-parts').checked;}
-
-// ── PAYMENT ──
-function selPlan(p){
-  selectedPlan=p;
-  document.querySelectorAll('.plan').forEach(el=>el.classList.remove('sel'));
-  document.getElementById('plan-'+p).classList.add('sel');
-  document.getElementById('pay-detail').style.display='block';
-}
-function bayar(){
-  if(!selectedPlan){toast('⚠ Pilih paket dulu!');return;}
-  closeModal('payModal');
-  showModal('csModal');
-  document.getElementById('cs-subj').value=`Pembayaran Premium ${selectedPlan.toUpperCase()}`;
-  document.getElementById('cs-msg').value='Halo, saya sudah melakukan pembayaran untuk paket '+selectedPlan+'. Mohon aktivasi akun saya. Terima kasih!';
-  toast('📨 Buat tiket CS untuk konfirmasi pembayaran!');
-}
-
-// ── CS TICKETS ──
-function submitTicket(){
-  const subj=document.getElementById('cs-subj').value.trim();
-  const msg=document.getElementById('cs-msg').value.trim();
-  if(!subj||!msg){toast('⚠ Isi subjek & pesan!');return;}
-  const id=`#${String(Math.floor(Math.random()*900+100)).padStart(3,'0')}`;
-  const div=document.createElement('div');
-  div.className='ticket';
-  const prio=user?.isPremium?'<span class="ticket-status prio">PRIORITAS 💎</span>':'<span class="ticket-status open">OPEN</span>';
-  div.innerHTML=`<div class="ticket-hd"><span class="ticket-title">${id} — ${subj}</span>${prio}</div><div class="ticket-msg">${msg}</div>`;
-  document.getElementById('ticketList').appendChild(div);
-  document.getElementById('cs-subj').value='';document.getElementById('cs-msg').value='';
-  toast('🎫 Tiket terkirim! '+(user?.isPremium?'Respon dalam 1 jam':'Respon dalam 24 jam'));
-  // Save to Supabase
-  if(user?.id)sbFetch('/rest/v1/tickets','POST',{user_id:user.id,subject:subj,message:msg,status:'open',is_premium:user.isPremium},user.token).catch(()=>{});
-}
-
-// ── ADMIN ──
-function logAdmin(msg){
-  const log=document.getElementById('admLog');
-  if(!log)return;
-  const t=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
-  const div=document.createElement('div');div.className='log-entry';
-  div.innerHTML=`<span>${t}</span> — ${msg}`;
-  log.prepend(div);
-}
-async function adminGiveToken(){
-  const email=document.getElementById('adm-email').value.trim();
-  const amt=parseInt(document.getElementById('adm-tkn').value);
-  if(!email||!amt){toast('⚠ Isi email & jumlah token!');return;}
-  if(user&&user.email===email){user.tokens+=amt;updateUI();}
-  logAdmin(`ADMIN: Beri ${amt} token ke ${email}`);
-  toast(`✓ ${amt} token diberikan ke ${email}!`);
-  // In prod: update DB
-  try{await sbFetch(`/rest/v1/users?email=eq.${email}`,'PATCH',{tokens:amt},user?.token);}catch(e){}
-}
-function adminDelMsg(){
-  const id=document.getElementById('adm-msgid').value.trim();
-  if(!id){toast('⚠ Masukkan ID pesan!');return;}
-  logAdmin(`ADMIN: Hapus pesan ID ${id}`);
-  toast(`✓ Pesan ${id} dihapus!`);
-}
-function adminReplyTicket(){
-  const id=document.getElementById('adm-tid').value.trim();
-  const reply=document.getElementById('adm-treply').value.trim();
-  if(!id||!reply){toast('⚠ Isi ID tiket & balasan!');return;}
-  // Update ticket UI
-  const tickets=document.querySelectorAll('.ticket');
-  tickets.forEach(t=>{if(t.querySelector('.ticket-title')?.textContent?.includes(id)){let r=t.querySelector('.ticket-reply');if(r)r.textContent='Admin: '+reply;else{const rd=document.createElement('div');rd.className='ticket-reply';rd.textContent='Admin: '+reply;t.appendChild(rd);}}});
-  logAdmin(`ADMIN: Balas tiket ${id}`);
-  toast(`✓ Tiket ${id} dibalas!`);
-}
-
-// ── LOGOUT ──
-function doLogout(){
-  if(tokenResetInterval)clearInterval(tokenResetInterval);
-  user=null;msgs=[];activeTools={};
-  document.getElementById('appS').classList.remove('on');
-  document.getElementById('authS').classList.add('on');
-  document.querySelectorAll('.mover').forEach(m=>m.classList.remove('on'));
-  toast('✓ Logout berhasil!');
-}
-
-// ── KEYBOARD SHORTCUTS ──
-document.addEventListener('keydown',e=>{
-  if(e.ctrlKey&&e.key==='k'){e.preventDefault();newChat();}
-  if(e.key==='Escape'){document.querySelectorAll('.mover').forEach(m=>m.classList.remove('on'));ep.style.display='none';}
-});
-
-// ── LOGO ANIMATION ──
-setTimeout(()=>{
-  const lg=document.getElementById('lgTitle');
-  if(lg){const txt='EXBOTZ';lg.textContent='';[...txt].forEach((c,i)=>setTimeout(()=>lg.textContent+=c,i*120));}
-},300);
-
-// ── HANDLE GOOGLE OAUTH CALLBACK ──
-async function handleOAuthCallback(){
-  const hash = window.location.hash;
-  if(hash && hash.includes('access_token')){
-    const p = new URLSearchParams(hash.substring(1));
-    const accessToken = p.get('access_token');
-    if(accessToken){
-      try{
-        const res = await fetch('/api/auth',{
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({action:'getUser', token: accessToken})
-        });
-        const data = await res.json();
-        user={
-          id: data.id||'g-'+Date.now(),
-          name:(data.name||data.email?.split('@')[0]||'USER').toUpperCase(),
-          email:data.email||'',
-          tokens:data.tokens||50,level:data.level||1,
-          exp:data.exp||0,isPremium:data.is_premium||false,
-          isAdmin:data.is_admin||false,token:accessToken
-        };
+    const hash=window.location.hash;
+    if(hash&&hash.includes('access_token')){
+      const p=new URLSearchParams(hash.substring(1));
+      const token=p.get('access_token');
+      if(token){
+        const r=await fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'getUser',token})});
+        const d=await r.json();
         window.history.replaceState({},'','/');
-        enterApp();
-        toast('✓ Login Google berhasil!');
-      }catch(e){toast('⚠ Google callback error');}
+        setTimeout(()=>loginSuccess(d.name||'USER',d.email||''),200);
+      }
     }
-  }
-}
+  }catch(e){}
+})();
 
-// ── INIT: cek callback Google saat halaman load ──
-document.addEventListener('DOMContentLoaded', ()=>{
-  handleOAuthCallback();
-});
-
-// ── EXPOSE FUNCTIONS GLOBALLY (fix untuk Cloudflare/hosting) ──
-window.authTab=authTab;
+// Expose all functions globally (fix untuk browser/hosting)
+window.switchTab=switchTab;
 window.doLogin=doLogin;
 window.doRegister=doRegister;
 window.doForgot=doForgot;
-window.doGoogle=doGoogle;
-window.doLogout=doLogout;
+window.doGoogleLogin=doGoogleLogin;
+window.loginSuccess=loginSuccess;
+window.toggleSidebar=toggleSidebar;
+window.closeSidebar=closeSidebar;
+window.switchPanel=switchPanel;
+window.sendMessage=sendMessage;
+window.sendQuick=sendQuick;
+window.handleKey=handleKey;
+window.autoResize=autoResize;
+window.clearChat=clearChat;
 window.newChat=newChat;
 window.loadChat=loadChat;
-window.sbTab=sbTab;
-window.togSB=togSB;
-window.togMobSB=togMobSB;
-window.closeMobSB=closeMobSB;
-window.togTool=togTool;
-window.sendMsg=sendMsg;
-window.sendGlobal=sendGlobal;
-window.gcKey=gcKey;
-window.ciKey=ciKey;
-window.ciResize=ciResize;
-window.useS=useS;
-window.copyM=copyM;
-window.likeM=likeM;
-window.regenM=regenM;
-window.clearChat=clearChat;
-window.exportChat=exportChat;
-window.handleFile=handleFile;
-window.rmUpload=rmUpload;
-window.startVoice=startVoice;
-window.stopVoice=stopVoice;
-window.togEmoji=togEmoji;
+window.generateImage=generateImage;
+window.selectStyle=selectStyle;
+window.selectSize=selectSize;
+window.toggleVoice=toggleVoice;
+window.openTool=openTool;
+window.closeTool=closeTool;
+window.closeModal=closeModal;
 window.showModal=showModal;
 window.closeModal=closeModal;
+window.handleAvatarUpload=handleAvatarUpload;
 window.saveProfile=saveProfile;
-window.togParts=togParts;
-window.selPlan=selPlan;
-window.bayar=bayar;
-window.submitTicket=submitTicket;
-window.adminGiveToken=adminGiveToken;
-window.adminDelMsg=adminDelMsg;
-window.adminReplyTicket=adminReplyTicket;
-window.sendOTP=sendOTP;
-window.handleOAuthCallback=handleOAuthCallback;
-window.doGoogle=doGoogle;
+window.callGroqAI=callGroqAI;
+
+
+// STATE
+let currentUser = null;
+let messageCount = 0;
+let chatHistory = [];
+let activeMode = 'standard';
+let voiceActive = false;
+let tokenUsed = 6500;
+
+// USERS DB (localStorage simulation)
+let users = JSON.parse(localStorage.getItem('exbotz_users') || '{}');
+
+// PIXEL RAIN
+function createPixelRain() {
+  const rain = document.getElementById('pixelRain');
+  const colors = ['#ff2d9b','#00c8ff','#ff6ec7','#7fd9ff','#ff2d9b44','#00c8ff44'];
+  for (let i = 0; i < 40; i++) {
+    const px = document.createElement('div');
+    px.className = 'px';
+    px.style.cssText = `
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${3+Math.random()*8}s;
+      animation-delay:${Math.random()*5}s;
+      width:${Math.random()>0.5?4:8}px;
+      height:${Math.random()>0.5?4:8}px;
+      opacity:${0.3+Math.random()*0.7};
+    `;
+    rain.appendChild(px);
+  }
+}
+createPixelRain();
+
+// AUTH FUNCTIONS
+function switchTab(tab) {
+  document.getElementById('loginForm').style.display = 'none';
+  document.getElementById('registerForm').style.display = 'none';
+  document.getElementById('forgotForm').style.display = 'none';
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+
+  if (tab === 'login') {
+    document.getElementById('loginForm').style.display = 'block';
+    document.querySelectorAll('.auth-tab')[0].classList.add('active');
+  } else if (tab === 'register') {
+    document.getElementById('registerForm').style.display = 'block';
+    document.querySelectorAll('.auth-tab')[1].classList.add('active');
+  } else if (tab === 'forgot') {
+    document.getElementById('forgotForm').style.display = 'block';
+  }
+}
+
+function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if (!email || !pass) { showToast('⚠ Please fill all fields!'); return; }
+
+  // Check user
+  if (users[email] && users[email].password === pass) {
+    loginSuccess(users[email].name, email);
+  } else if (email && pass.length >= 3) {
+    // Demo: allow any login
+    loginSuccess(email.split('@')[0], email);
+  } else {
+    showToast('❌ Invalid credentials!');
+  }
+}
+
+function doRegister() {
+  const name = document.getElementById('regUser').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pass = document.getElementById('regPass').value;
+  const pass2 = document.getElementById('regPass2').value;
+
+  if (!name || !email || !pass || !pass2) { showToast('⚠ Please fill all fields!'); return; }
+  if (pass !== pass2) { showToast('❌ Passwords do not match!'); return; }
+  if (pass.length < 8) { showToast('⚠ Password min 8 characters!'); return; }
+  if (users[email]) { showToast('⚠ Email already registered!'); return; }
+
+  users[email] = { name, email, password: pass };
+  localStorage.setItem('exbotz_users', JSON.stringify(users));
+  showToast('✅ Account created! Please login.');
+  switchTab('login');
+}
+
+function doForgot() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  if (!email) { showToast('⚠ Enter your email!'); return; }
+  showToast('📨 Reset link sent to ' + email);
+  setTimeout(() => switchTab('login'), 1500);
+}
+
+async function doGoogleLogin(){
+  showToast('🔄 Membuka Google...');
+  try{
+    const r=await fetch('/api/config');
+    const cfg=await r.json();
+    if(!cfg.supabaseUrl){loginSuccess('DEMO USER','demo@exbotz.com');return;}
+    const red=encodeURIComponent(window.location.origin);
+    window.location.href=cfg.supabaseUrl+'/auth/v1/authorize?provider=google&redirect_to='+red+'&prompt=select_account';
+  }catch(e){loginSuccess('DEMO USER','demo@exbotz.com');}
+}
+
+function loginSuccess(name, email) {
+  // Use saved username/avatar if exists
+  const saved = JSON.parse(localStorage.getItem('exbotz_profile_' + email) || 'null');
+  const displayName = saved?.username || name.slice(0,3).toUpperCase();
+  currentUser = { name: displayName, email, avatarUrl: saved?.avatarUrl || null };
+
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'flex';
+  document.getElementById('profileName').textContent = displayName;
+  document.getElementById('profileEmail').textContent = email;
+
+  // Set avatar in topbar
+  updateAllAvatars(displayName, currentUser.avatarUrl);
+  showToast('🎮 Welcome back, ' + displayName + '!');
+  populateHistory();
+}
+
+function updateAllAvatars(username, avatarUrl) {
+  // Topbar avatar
+  const topAvatar = document.getElementById('userAvatar');
+  if (avatarUrl) {
+    topAvatar.innerHTML = `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover">`;
+  } else {
+    topAvatar.textContent = username[0] || '?';
+  }
+
+  // Profile page avatar
+  const avatarEmoji = document.getElementById('avatarEmoji');
+  const avatarImg = document.getElementById('avatarImg');
+  const modalEmoji = document.getElementById('modalAvatarEmoji');
+  const modalImg = document.getElementById('modalAvatarImg');
+
+  if (avatarUrl) {
+    if (avatarEmoji) avatarEmoji.style.display = 'none';
+    if (avatarImg) { avatarImg.src = avatarUrl; avatarImg.style.display = 'block'; }
+    if (modalEmoji) modalEmoji.style.display = 'none';
+    if (modalImg) { modalImg.src = avatarUrl; modalImg.style.display = 'block'; }
+  } else {
+    if (avatarEmoji) { avatarEmoji.style.display = ''; avatarEmoji.textContent = '😎'; }
+    if (avatarImg) avatarImg.style.display = 'none';
+    if (modalEmoji) { modalEmoji.style.display = ''; }
+    if (modalImg) modalImg.style.display = 'none';
+  }
+}
+
+function handleAvatarUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    showToast('⚠ Please upload an image file!');
+    return;
+  }
+
+  // Max 5MB
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('⚠ Image too large! Max 5MB.');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataUrl = e.target.result;
+    currentUser.avatarUrl = dataUrl;
+
+    // Update all avatar displays
+    updateAllAvatars(currentUser.name, dataUrl);
+
+    // Auto-save avatar
+    if (currentUser.email) {
+      const saved = JSON.parse(localStorage.getItem('exbotz_profile_' + currentUser.email) || '{}');
+      saved.avatarUrl = dataUrl;
+      saved.username = currentUser.name;
+      localStorage.setItem('exbotz_profile_' + currentUser.email, JSON.stringify(saved));
+    }
+
+    showToast('✅ Photo updated! Looking good 🔥');
+
+    // Update modal preview too
+    const modalImg = document.getElementById('modalAvatarImg');
+    const modalEmoji = document.getElementById('modalAvatarEmoji');
+    if (modalImg) { modalImg.src = dataUrl; modalImg.style.display = 'block'; }
+    if (modalEmoji) modalEmoji.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function openEditProfile() {
+  const input = document.getElementById('editUsername');
+  if (input && currentUser) {
+    input.value = currentUser.name;
+    updateUsernameCounter(input.value.length);
+    document.getElementById('usernamePreview').textContent = input.value || '...';
+  }
+  updateAllAvatars(currentUser?.name || 'User', currentUser?.avatarUrl || null);
+  openModal('editProfileModal');
+}
+
+function updateUsernameCounter(len) {
+  const counter = document.getElementById('charCounter');
+  const preview = document.getElementById('usernamePreview');
+  const val = document.getElementById('editUsername').value;
+  if (counter) {
+    counter.textContent = len;
+    if (len < 3) {
+      counter.style.color = '#ff4444';
+      counter.title = 'Too short!';
+    } else if (len >= 3 && len <= 20) {
+      counter.style.color = '#00ff88';
+    } else {
+      counter.style.color = 'var(--pk1)';
+    }
+  }
+  if (preview) preview.textContent = val || '...';
+}
+
+function saveProfile() {
+  const input = document.getElementById('editUsername');
+  const newName = input?.value?.trim();
+
+  if (!newName || newName.length === 0) {
+    showToast('⚠ Username cannot be empty!'); return;
+  }
+  if (newName.length < 3) {
+    showToast('⚠ Username minimum 3 characters!'); return;
+  }
+
+  currentUser.name = newName;
+
+  // Save to localStorage
+  if (currentUser.email) {
+    const saved = JSON.parse(localStorage.getItem('exbotz_profile_' + currentUser.email) || '{}');
+    saved.username = newName;
+    if (currentUser.avatarUrl) saved.avatarUrl = currentUser.avatarUrl;
+    localStorage.setItem('exbotz_profile_' + currentUser.email, JSON.stringify(saved));
+  }
+
+  // Update UI
+  document.getElementById('profileName').textContent = newName;
+  updateAllAvatars(newName, currentUser.avatarUrl);
+
+  closeModal('editProfileModal');
+  showToast('✅ Profile saved! Username: ' + newName);
+}
+
+function doLogout() {
+  currentUser = null;
+  document.getElementById('mainApp').style.display = 'none';
+  document.getElementById('authScreen').style.display = 'flex';
+  chatHistory = [];
+  messageCount = 0;
+  document.getElementById('chatMessages').innerHTML = `
+    <div class="welcome-screen" id="welcomeScreen">
+      <div class="welcome-bot">🤖</div>
+      <div class="welcome-title">EXBOTZ AI</div>
+      <div class="welcome-sub">[ READY TO ASSIST ]</div>
+      <div style="color:#555;font-size:13px;font-family:var(--mono);max-width:340px;line-height:1.6">
+        Hello! I'm Exbotz, your pixel-powered AI companion.<br>What shall we explore today?
+      </div>
+      <div class="quick-prompts">
+        <button class="quick-btn" onclick="sendQuick('Write a short story about a space explorer')">📖 Write a story</button>
+        <button class="quick-btn" onclick="sendQuick('Explain machine learning in simple terms')">🧠 Explain AI</button>
+        <button class="quick-btn" onclick="sendQuick('Write a Python hello world program')">💻 Write code</button>
+        <button class="quick-btn" onclick="sendQuick('What are 5 tips for productivity?')">⚡ Productivity tips</button>
+      </div>
+    </div>`;
+  showToast('👋 Logged out. See you soon!');
+}
+
+// PANEL SWITCHING
+function switchPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+
+  const icons = {chat:'💬',imagine:'🎨',tools:'🛠',history:'📜',settings:'⚙️',profile:'👤'};
+  document.querySelectorAll('.sidebar-item').forEach(s => {
+    if (s.querySelector('.item-icon')?.textContent === icons[name]) s.classList.add('active');
+  });
+
+  // Close sidebar on mobile
+  if(window.innerWidth<768){
+    document.getElementById('sidebar').classList.remove('open');
+    const ov=document.getElementById('sbOverlay');
+    if(ov) ov.classList.remove('on');
+  }
+}
+
+function toggleSidebar() {
+  const sb=document.getElementById('sidebar');
+  const ov=document.getElementById('sbOverlay');
+  sb.classList.toggle('open');
+  if(ov) ov.classList.toggle('on',sb.classList.contains('open'));
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  const ov=document.getElementById('sbOverlay');
+  if(ov) ov.classList.remove('on');
+}
+
+// CHAT FUNCTIONS
+const botResponses = {
+  standard: [
+    "Great question! Here's what I know: ",
+    "Let me help you with that! ",
+    "Excellent! Based on my knowledge, ",
+    "Sure! Here's a comprehensive answer: ",
+    "I'd be happy to assist! ",
+  ],
+  creative: [
+    "✨ Oh, what a delightful thought! Let me paint you a picture... ",
+    "🎨 Imagine this: ",
+    "💫 In the realm of creativity, ",
+    "🌈 Let's think outside the pixel! ",
+  ],
+  coder: [
+    "```\n// Exbotz Code Response\n",
+    "🔧 Here's the technical breakdown: ",
+    "💻 Let me write that code for you: ",
+  ],
+  analyst: [
+    "📊 Based on data analysis: ",
+    "🔍 Let me break this down systematically: ",
+    "📈 Key insights here: ",
+  ],
+  writer: [
+    "📝 Crafting your content: ",
+    "✍️ Here's a polished version: ",
+    "📖 Let me write that for you: ",
+  ],
+  tutor: [
+    "🎓 Let me explain step by step: ",
+    "📚 Great learning opportunity! ",
+    "🌟 Here's how to understand this: ",
+  ]
+};
+
+const sampleAnswers = {
+  'write a short story about a space explorer': `🚀 **The Last Signal**\n\nCaptain Zara floated through the silent void, her helmet visor reflecting a billion dying stars. Three years since Earth's last transmission. Three years since she'd heard another human voice.\n\nThen the beacon pulsed — once, twice, three times.\n\n*Coordinates: Unknown. Origin: Unknown. Message: "You are not alone."*\n\nZara smiled for the first time in 847 days. She punched in the coordinates.\n\nShe was going home. Just... a different one.`,
+
+  'explain machine learning in simple terms': `🧠 **Machine Learning — Simply Explained!**\n\nThink of it like teaching a child:\n\n**1. Show examples** → You show thousands of cat photos\n**2. It learns patterns** → "Cats have pointy ears, whiskers, fur"\n**3. It makes predictions** → "This new photo? Definitely a cat! 🐱"\n\nThe "machine" learns from DATA instead of being explicitly programmed. The more data = the smarter it gets!\n\n**Real-world examples:**\n• Netflix recommending shows you'll love\n• Gmail filtering your spam\n• Your phone recognizing your face\n\nPretty cool, right? 😎`,
+
+  'write a python hello world program': `💻 **Python Hello World + Bonus!**\n\n\`\`\`python\n# Basic Hello World\nprint("Hello, World!")\n\n# Exbotz Edition 🎮\nname = input("What's your name? ")\nprint(f"Hello, {name}! Welcome to Exbotz AI! 🤖")\n\n# Fun loop version\nfor i in range(3):\n    print(f"Hello World #{i+1}! 🚀")\n\`\`\`\n\n**To run it:**\n1. Install Python from python.org\n2. Save as \`hello.py\`\n3. Run: \`python hello.py\`\n\nHappy coding! 💪`,
+
+  'what are 5 tips for productivity?': `⚡ **5 POWER Productivity Tips!**\n\n**1. 🍅 Pomodoro Technique**\nWork 25 mins → Break 5 mins → Repeat 4x → Big break!\n\n**2. 🐸 Eat the Frog**\nDo your HARDEST task FIRST every morning.\n\n**3. 📵 Phone in Another Room**\nStudies show even a visible phone kills focus by 20%!\n\n**4. 📝 Night Planning**\nWrite tomorrow's top 3 tasks before sleeping.\n\n**5. ⚡ 2-Minute Rule**\nIf a task takes <2 minutes, DO IT NOW. Don't schedule it.\n\n**BONUS:** Use Exbotz to automate repetitive thinking tasks! 😄`
+};
+
+function getTime() {
+  const now = new Date();
+  return now.toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'});
+}
+
+function addMessage(role, text) {
+  const ws = document.getElementById('welcomeScreen');
+  if (ws) ws.remove();
+
+  const container = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+
+  const avatar = role === 'bot' ? '🤖' : '😎';
+  const name = role === 'bot' ? 'EXBOTZ' : (currentUser?.name?.toUpperCase() || 'USER');
+
+  div.innerHTML = `
+    <div class="msg-avatar">${avatar}</div>
+    <div>
+      <div class="msg-name">${name}</div>
+      <div class="msg-bubble">${formatText(text)}</div>
+      <div class="msg-time">${getTime()}</div>
+    </div>`;
+
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  messageCount++;
+  document.getElementById('statMsgs').textContent = messageCount;
+  chatHistory.push({role, text, time: getTime()});
+  populateHistory();
+}
+
+function formatText(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--pk2)">$1</strong>')
+    .replace(/`([^`]+)`/g, '<code style="background:rgba(0,200,255,0.1);padding:2px 6px;color:var(--bl1);font-family:var(--mono)">' + '$1</code>')
+    .replace(/```[\w]*\n?([\s\S]*?)```/g, '<pre style="background:rgba(0,0,0,0.5);padding:12px;border:1px solid var(--border-bl);overflow-x:auto;margin-top:8px;color:var(--bl3);font-family:var(--mono);font-size:12px;white-space:pre-wrap">$1</pre>')
+    .replace(/\n/g, '<br>');
+}
+
+function showTyping() {
+  const container = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.id = 'typingIndicator';
+  div.innerHTML = `
+    <div class="msg-avatar">🤖</div>
+    <div class="msg-bubble" style="background:rgba(255,45,155,0.06);border:1px solid var(--border-pk)">
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+    </div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function hideTyping() {
+  const t = document.getElementById('typingIndicator');
+  if (t) t.remove();
+}
+
+function generateBotResponse(input) {
+  const lower = input.toLowerCase();
+
+  // Check sample answers
+  for (const key in sampleAnswers) {
+    if (lower.includes(key) || key.includes(lower.slice(0,20))) {
+      return sampleAnswers[key];
+    }
+  }
+
+  const starters = botResponses[activeMode] || botResponses.standard;
+  const starter = starters[Math.floor(Math.random() * starters.length)];
+
+  const responses = [
+    `${starter}Your question about "${input.slice(0,30)}..." is really interesting! Based on my analysis, I can provide comprehensive insights on this topic. The key points to consider are the context, application, and broader implications. Would you like me to dive deeper into any specific aspect?`,
+
+    `${starter}This is a fascinating topic! Here's what I understand:\n\n**Key Points:**\n• The subject involves multiple interconnected elements\n• Context plays a crucial role in understanding\n• There are practical applications worth exploring\n\nShall I elaborate on any of these points?`,
+
+    `${starter}Great choice of topic! Let me break this down:\n\n1. **First**, consider the fundamental principles\n2. **Second**, look at real-world applications\n3. **Third**, think about future implications\n\nWhat specific aspect interests you most?`,
+
+    `${starter}Absolutely! Here's my take on this:\n\nThe topic you've raised connects to several important ideas in modern thinking. Whether you're approaching this from a technical, creative, or analytical perspective, there's a lot to unpack. I'm here to guide you through every layer of understanding!\n\n🎮 Ready to explore more?`,
+  ];
+
+  return responses[Math.floor(Math.random() * responses.length)];
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  addMessage('user', text);
+  input.value = '';
+  autoResize(input);
+
+  tokenUsed += Math.floor(text.length / 2);
+  updateTokens();
+
+  showTyping();
+  callGroqAI(text).then(resp=>{
+    hideTyping();
+    streamMessage(resp);
+  }).catch(()=>{
+    hideTyping();
+    streamMessage(generateBotResponse(text));
+  });
+}
+
+// ── GROQ AI — sungguhan, bukan demo ──
+async function callGroqAI(text){
+  const hist=chatHistory.slice(-10).map(m=>({
+    role:m.role==='bot'?'assistant':'user',
+    content:m.text
+  }));
+  const r=await fetch('/api/chat',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      messages:[...hist,{role:'user',content:text}],
+      system:'Kamu adalah Exbotz, AI asisten canggih buatan DhooLiaa. Kepribadianmu energetik, ramah, sangat membantu. Jawab dalam bahasa yang sama dengan user. Jangan sebut nama model AI aslimu.',
+      model:'llama-3.3-70b-versatile'
+    })
+  });
+  const d=await r.json();
+  if(d.choices?.[0]?.message?.content) return d.choices[0].message.content;
+  throw new Error('no resp');
+}
+
+function streamMessage(text) {
+  const ws = document.getElementById('welcomeScreen');
+  if (ws) ws.remove();
+
+  const container = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.innerHTML = `
+    <div class="msg-avatar">🤖</div>
+    <div>
+      <div class="msg-name">EXBOTZ</div>
+      <div class="msg-bubble" id="streamBubble"></div>
+      <div class="msg-time">${getTime()}</div>
+    </div>`;
+  container.appendChild(div);
+
+  const bubble = document.getElementById('streamBubble');
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i < text.length) {
+      bubble.innerHTML = formatText(text.slice(0, i+1));
+      i += 3;
+      container.scrollTop = container.scrollHeight;
+    } else {
+      bubble.innerHTML = formatText(text);
+      bubble.id = '';
+      clearInterval(interval);
+      messageCount++;
+      document.getElementById('statMsgs').textContent = messageCount;
+      chatHistory.push({role:'bot', text, time: getTime()});
+      populateHistory();
+    }
+  }, 15);
+}
+
+function sendQuick(text) {
+  document.getElementById('chatInput').value = text;
+  sendMessage();
+  switchPanel('chat');
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+}
+
+function clearChat() {
+  chatHistory = [];
+  const container = document.getElementById('chatMessages');
+  container.innerHTML = `
+    <div class="welcome-screen" id="welcomeScreen">
+      <div class="welcome-bot">🤖</div>
+      <div class="welcome-title">EXBOTZ AI</div>
+      <div class="welcome-sub">[ CHAT CLEARED ]</div>
+      <div style="color:#555;font-size:13px;font-family:var(--mono)">Start a fresh conversation!</div>
+      <div class="quick-prompts">
+        <button class="quick-btn" onclick="sendQuick('Write a short story about a space explorer')">📖 Write a story</button>
+        <button class="quick-btn" onclick="sendQuick('Explain machine learning in simple terms')">🧠 Explain AI</button>
+      </div>
+    </div>`;
+  showToast('🗑 Chat cleared!');
+}
+
+function newChat() {
+  clearChat();
+  showToast('➕ New chat started!');
+}
+
+function loadChat(topic) {
+  switchPanel('chat');
+  document.getElementById('chatInput').value = topic;
+  document.getElementById('chatInput').focus();
+}
+
+// HISTORY
+let historyData = [
+  {title:'How to make ramen', preview:'Step by step ramen recipe...', date:'Today 14:32', msgs:12},
+  {title:'Write a poem about stars', preview:'Twinkling pixels in the night...', date:'Today 11:15', msgs:8},
+  {title:'Explain quantum physics', preview:'In quantum mechanics, particles...', date:'Yesterday', msgs:21},
+  {title:'Fix my JavaScript code', preview:'The bug was in line 47...', date:'2 days ago', msgs:15},
+  {title:'Generate logo ideas', preview:'For a tech startup, consider...', date:'3 days ago', msgs:6},
+  {title:'Best anime recommendations', preview:'Based on your taste, try...', date:'4 days ago', msgs:9},
+  {title:'Python tutorial for beginners', preview:'Let\'s start with variables...', date:'5 days ago', msgs:33},
+];
+
+function populateHistory() {
+  const list = document.getElementById('historyList');
+  if (!list) return;
+
+  // Add current chats to front
+  const allHistory = [...chatHistory.reduce((acc, msg) => {
+    if (msg.role === 'user' && !acc.find(h => h.title === msg.text.slice(0,40))) {
+      acc.push({title: msg.text.slice(0,40), preview: 'Just now', date: msg.time, msgs: 1});
+    }
+    return acc;
+  }, []), ...historyData];
+
+  list.innerHTML = allHistory.map(h => `
+    <div class="hcard" onclick="sendQuick('${h.title.replace(/'/g,"\\'")}')">
+      <div class="hcard-title">${h.title}</div>
+      <div class="hcard-meta">📅 ${h.date} &nbsp;·&nbsp; 💬 ${h.msgs} msgs</div>
+      <div class="hcard-preview">${h.preview}</div>
+    </div>
+  `).join('');
+}
+
+function filterHistory(q) {
+  const list = document.getElementById('historyList');
+  const filtered = historyData.filter(h =>
+    h.title.toLowerCase().includes(q.toLowerCase()) ||
+    h.preview.toLowerCase().includes(q.toLowerCase())
+  );
+  list.innerHTML = filtered.map(h => `
+    <div class="hcard" onclick="sendQuick('${h.title.replace(/'/g,"\\'")}')">
+      <div class="hcard-title">${h.title}</div>
+      <div class="hcard-meta">📅 ${h.date} &nbsp;·&nbsp; 💬 ${h.msgs} msgs</div>
+      <div class="hcard-preview">${h.preview}</div>
+    </div>
+  `).join('');
+}
+
+// IMAGE GEN
+function selectStyle(el) {
+  document.querySelectorAll('.style-chip').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function selectSize(el) {
+  document.querySelectorAll('.size-btn').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function generateImage(){
+  const prompt=document.getElementById('imgPrompt').value.trim();
+  if(!prompt){showToast('⚠ Enter an image description!');return;}
+  const styleEl=document.querySelector('.style-chip.selected');
+  const sizeEl=document.querySelector('.size-btn.selected');
+  const style=styleEl?styleEl.textContent.replace(/[^a-zA-Z ]/g,'').trim():'pixel art';
+  const sizeStr=sizeEl?sizeEl.textContent.trim():'512x512';
+  const parts=sizeStr.split(/[x×]/);
+  const w=parseInt(parts[0])||512, h=parseInt(parts[1])||512;
+  const full=prompt+', '+style+', high quality, detailed, HD';
+  const enc=encodeURIComponent(full);
+  const seed=Math.floor(Math.random()*99999);
+  const url='https://image.pollinations.ai/prompt/'+enc+'?width='+w+'&height='+h+'&seed='+seed+'&nologo=true&enhance=true&model=flux';
+  const result=document.getElementById('genResult');
+  result.className='gen-result loading';
+  result.innerHTML='<div><div class="pixel-loader"><span class="pl-sq"></span><span class="pl-sq"></span><span class="pl-sq"></span><span class="pl-sq"></span></div><br><br>GENERATING HD IMAGE...<br><span style="font-size:6px;font-family:var(--pixel);color:var(--bl1)">AI IS CREATING...</span></div>';
+  const img=new Image();
+  img.onload=function(){
+    result.className='gen-result done';
+    result.innerHTML='<img src="'+url+'" style="max-width:100%;border:2px solid var(--pk1);box-shadow:var(--glow-pk);display:block;margin:0 auto" alt="'+prompt+'"><div style="font-family:var(--pixel);font-size:7px;color:var(--pk1);margin-top:12px">✅ HD IMAGE READY!</div><div style="display:flex;gap:8px;justify-content:center;margin-top:10px"><a href="'+url+'" download="exbotz.jpg" target="_blank" style="background:var(--pk1);color:#fff;font-family:var(--pixel);font-size:6px;padding:8px 14px;text-decoration:none;display:inline-block">⬇ DOWNLOAD</a></div>';
+  };
+  img.onerror=function(){
+    result.className='gen-result';
+    result.innerHTML='<div style="color:red;font-family:var(--pixel);font-size:7px;padding:20px">⚠ Failed. Check connection and try again!</div>';
+  };
+  img.src=url;
+}
+
+function selectStyle(el) {
+  document.querySelectorAll('.style-chip').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function selectSize(el) {
+  document.querySelectorAll('.size-btn').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function generateImage() {
+  const prompt = document.getElementById('imgPrompt').value.trim();
+  if (!prompt) { showToast('⚠ Enter an image description!'); return; }
+
+  const result = document.getElementById('genResult');
+  result.className = 'gen-result loading';
+  result.innerHTML = `<div><div class="pixel-loader"><span class="pl-sq"></span><span class="pl-sq"></span><span class="pl-sq"></span><span class="pl-sq"></span></div><br><br>GENERATING PIXEL ART...<br><span style="font-size:6px;font-family:var(--pixel);color:var(--bl1)">AI IS DREAMING...</span></div>`;
+
+  setTimeout(() => {
+    // Generate a colorful pixel art placeholder
+    const canvas = document.createElement('canvas');
+    canvas.width = 256; canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+
+    // Generate pseudo-pixel art
+    const pixelSize = 16;
+    const colors = ['#ff2d9b','#00c8ff','#ff6ec7','#7fd9ff','#3d0026','#001a3d','#ff2d9b88','#00c8ff88','#2d0050','#000','#fff'];
+    for (let y = 0; y < 256; y += pixelSize) {
+      for (let x = 0; x < 256; x += pixelSize) {
+        ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+        ctx.fillRect(x, y, pixelSize, pixelSize);
+      }
+    }
+
+    // Draw glow overlay
+    const grad = ctx.createRadialGradient(128,128,20,128,128,128);
+    grad.addColorStop(0,'rgba(255,45,155,0.2)');
+    grad.addColorStop(1,'rgba(0,200,255,0.1)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,256,256);
+
+    result.className = 'gen-result done';
+    result.innerHTML = `
+      <img src="${canvas.toDataURL()}" style="width:256px;height:256px;image-rendering:pixelated;border:2px solid var(--pk1);box-shadow:var(--glow-pk)" alt="Generated">
+      <div style="font-family:var(--pixel);font-size:7px;color:var(--pk1);margin-top:12px">✅ IMAGE GENERATED!</div>
+      <div style="font-size:12px;color:#666;margin-top:4px">"${prompt.slice(0,40)}..."</div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="top-btn" onclick="showToast('💾 Image saved!')">💾 Save</button>
+        <button class="top-btn" id="btnGenerate">🔄 Regenerate</button>
+        <button class="top-btn" onclick="showToast('📋 Copied!')">📋 Copy</button>
+      </div>`;
+  }, 2500);
+}
+
+// TOOLS
+const toolContents = {
+  translator: `
+    <div class="form-group"><label class="form-label">TEXT TO TRANSLATE</label>
+    <textarea class="gen-textarea" style="height:80px" placeholder="Enter text..."></textarea></div>
+    <div style="display:flex;gap:10px;margin-bottom:16px">
+      <select class="styled-select"><option>Auto Detect</option><option>Indonesian</option><option>English</option><option>Japanese</option></select>
+      <span style="color:var(--pk1);align-self:center">→</span>
+      <select class="styled-select"><option>English</option><option>Indonesian</option><option>Japanese</option><option>Korean</option><option>Spanish</option></select>
+    </div>
+    <button class="btn-primary" onclick="showToast('🌐 Translated!')" style="clip-path:none">TRANSLATE</button>`,
+
+  summarizer: `
+    <div class="form-group"><label class="form-label">PASTE YOUR TEXT</label>
+    <textarea class="gen-textarea" style="height:100px" placeholder="Paste a long article or text here..."></textarea></div>
+    <button class="btn-primary" onclick="showToast('📋 Summarized!')" style="clip-path:none">SUMMARIZE</button>`,
+
+  codehelper: `
+    <div class="form-group"><label class="form-label">YOUR CODE / QUESTION</label>
+    <textarea class="gen-textarea" style="height:100px;font-family:var(--mono)" placeholder="Paste your code or describe what you need..."></textarea></div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <select class="styled-select"><option>Python</option><option>JavaScript</option><option>Java</option><option>C++</option><option>HTML/CSS</option></select>
+      <select class="styled-select"><option>Debug</option><option>Explain</option><option>Generate</option><option>Optimize</option></select>
+    </div>
+    <button class="btn-primary" onclick="showToast('💻 Code analyzed!')" style="clip-path:none">ANALYZE CODE</button>`,
+
+  writer: `
+    <div class="form-group"><label class="form-label">WRITING TOPIC</label>
+    <input class="form-input" placeholder="e.g. Benefits of AI in education"></div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <select class="styled-select"><option>Blog Post</option><option>Email</option><option>Essay</option><option>Story</option><option>Script</option></select>
+      <select class="styled-select"><option>Professional</option><option>Casual</option><option>Humorous</option><option>Formal</option></select>
+    </div>
+    <button class="btn-primary" onclick="showToast('📝 Content generated!')" style="clip-path:none">GENERATE</button>`,
+
+  math: `
+    <div class="form-group"><label class="form-label">MATH PROBLEM</label>
+    <input class="form-input" placeholder="e.g. Solve x² + 5x + 6 = 0"></div>
+    <button class="btn-primary" onclick="showToast('🧮 Solving...')" style="clip-path:none;margin-top:8px">SOLVE</button>`,
+
+  quiz: `
+    <div class="form-group"><label class="form-label">QUIZ TOPIC</label>
+    <input class="form-input" placeholder="e.g. World War II, Python basics..."></div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <select class="styled-select"><option>5 Questions</option><option>10 Questions</option><option>20 Questions</option></select>
+      <select class="styled-select"><option>Multiple Choice</option><option>True/False</option><option>Fill in Blank</option></select>
+    </div>
+    <button class="btn-primary" onclick="showToast('❓ Quiz created!')" style="clip-path:none">GENERATE QUIZ</button>`,
+
+  seo: `
+    <div class="form-group"><label class="form-label">TARGET KEYWORD</label>
+    <input class="form-input" placeholder="e.g. best coffee shops Jakarta"></div>
+    <div class="form-group"><label class="form-label">CONTENT TYPE</label>
+    <select class="styled-select" style="width:100%"><option>Blog Article</option><option>Product Description</option><option>Landing Page</option><option>Meta Description</option></select></div>
+    <button class="btn-primary" onclick="showToast('🔍 SEO content ready!')" style="clip-path:none">GENERATE SEO</button>`,
+
+  idea: `
+    <div class="form-group"><label class="form-label">WHAT DO YOU NEED IDEAS FOR?</label>
+    <textarea class="gen-textarea" style="height:80px" placeholder="e.g. A mobile app for students..."></textarea></div>
+    <button class="btn-primary" onclick="showToast('💡 10 ideas generated!')" style="clip-path:none">BRAINSTORM</button>`,
+
+  emoji: `
+    <div class="form-group"><label class="form-label">SAY SOMETHING</label>
+    <input class="form-input" placeholder="e.g. I am feeling happy today"></div>
+    <button class="btn-primary" onclick="showToast('😎 🎉 ✨ 🚀 🌟!')" style="clip-path:none;margin-top:8px">EMOJIFY</button>`,
+};
+
+const toolTitles = {
+  translator:'🌐 TRANSLATOR', summarizer:'📋 SUMMARIZER', codehelper:'💻 CODE HELPER',
+  writer:'📝 AI WRITER', math:'🧮 MATH SOLVER', quiz:'❓ QUIZ MAKER',
+  seo:'🔍 SEO WRITER', idea:'💡 IDEA GENERATOR', emoji:'😎 EMOJI CHAT'
+};
+
+function openTool(name) {
+  document.getElementById('toolModalTitle').textContent = toolTitles[name] || name.toUpperCase();
+  document.getElementById('toolModalContent').innerHTML = toolContents[name] || '<p>Coming soon!</p>';
+  openModal('toolModal');
+}
+function closeTool() {
+  const modal = document.getElementById('toolModal');
+  if (modal) modal.style.display = 'none';
+  const overlay = document.getElementById('toolModalOverlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+function showModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'flex';
+}
+
+function closeModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'none';
+}
+
+
+
+// MODAL
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// MODE
+function setMode(el, mode) {
+  document.querySelectorAll('.mode-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  activeMode = mode;
+  showToast(`⚡ Mode: ${mode.toUpperCase()}`);
+}
+
+// VOICE
+function toggleVoice() {
+  voiceActive = !voiceActive;
+  document.getElementById('voiceViz').classList.toggle('active', voiceActive);
+  if (voiceActive) {
+    showToast('🎤 Voice input active...');
+    setTimeout(() => {
+      voiceActive = false;
+      document.getElementById('voiceViz').classList.remove('active');
+      document.getElementById('chatInput').value = 'Hello Exbotz, how are you today?';
+      showToast('✅ Voice captured!');
+    }, 3000);
+  } else {
+    showToast('🎤 Voice stopped');
+  }
+}
+
+// TOKENS
+function updateTokens() {
+  const pct = Math.min((tokenUsed / 10000) * 100, 100);
+  document.querySelector('.token-fill').style.width = pct + '%';
+  document.getElementById('tokenVal').textContent = `${tokenUsed.toLocaleString()} / 10,000`;
+}
+
+// SETTINGS
+function togglePixelRain(toggle) {
+  toggle.classList.toggle('on');
+  document.getElementById('pixelRain').style.display =
+    toggle.classList.contains('on') ? 'block' : 'none';
+}
+
+function changeTheme(color) {
+  const themes = {
+    pink: {pk1:'#ff2d9b',bl1:'#00c8ff'},
+    blue: {pk1:'#00c8ff',bl1:'#ff2d9b'},
+    purple: {pk1:'#bf00ff',bl1:'#00ffcc'},
+    green: {pk1:'#00ff88',bl1:'#ff6ec7'},
+  };
+  if (themes[color]) {
+    document.documentElement.style.setProperty('--pk1', themes[color].pk1);
+    document.documentElement.style.setProperty('--bl1', themes[color].bl1);
+    showToast('🎨 Theme changed!');
+  }
+}
+
+function exportData() {
+  const data = JSON.stringify({user: currentUser, history: chatHistory, settings: {}}, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'exbotz-data.json';
+  a.click();
+  showToast('💾 Data exported!');
+}
+
+// TOAST
+let toastTimeout;
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// KEYBOARD SHORTCUTS
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey || e.metaKey) {
+    if (e.key === 'n') { e.preventDefault(); newChat(); }
+    if (e.key === 'k') { e.preventDefault(); clearChat(); }
+    if (e.key === '/') { e.preventDefault(); document.getElementById('chatInput')?.focus(); }
+  }
+});
+
+
+
+// EVENT DELEGATION — works even when Cloudflare breaks inline handlers
+document.addEventListener('click', function(e) {
+  const t = e.target.closest('[data-action]') || e.target;
+  const action = t.getAttribute ? t.getAttribute('data-action') : null;
+  
+  if (action === 'switchTab') { switchTab(t.getAttribute('data-tab')); return; }
+  if (action === 'googleLogin') { doGoogleLogin(); return; }
+  if (action === 'toggleSidebar') { toggleSidebar(); return; }
+  if (action === 'closeSidebar') { closeSidebar(); return; }
+  if (action === 'closeTool') { closeTool(); return; }
+  if (action === 'closeModal') { closeModal(t.getAttribute('data-id')); return; }
+  if (action === 'newChat') { newChat(); return; }
+  if (action === 'clearChat') { clearChat(); return; }
+  if (action === 'switchPanel') { switchPanel(t.getAttribute('data-panel')); return; }
+});
+
+// Bind specific buttons by ID
+document.addEventListener('DOMContentLoaded', function() {
+  var btnLogin = document.getElementById('btnLogin');
+  if (btnLogin) btnLogin.addEventListener('click', doLogin);
+  
+  var btnReg = document.getElementById('btnRegister');
+  if (btnReg) btnReg.addEventListener('click', doRegister);
+  
+  var btnForgot = document.getElementById('btnForgot');
+  if (btnForgot) btnForgot.addEventListener('click', doForgot);
+  
+  var btnSend = document.getElementById('btnSend');
+  if (btnSend) btnSend.addEventListener('click', sendMessage);
+  
+  var btnGen = document.getElementById('btnGenerate');
+  if (btnGen) btnGen.addEventListener('click', generateImage);
+
+  // Also expose all functions to window as backup
+  var fns = {
+    switchTab:switchTab, doLogin:doLogin, doRegister:doRegister,
+    doForgot:doForgot, doGoogleLogin:doGoogleLogin, loginSuccess:loginSuccess,
+    toggleSidebar:toggleSidebar, closeSidebar:closeSidebar, switchPanel:switchPanel,
+    sendMessage:sendMessage, sendQuick:sendQuick, handleKey:handleKey,
+    autoResize:autoResize, clearChat:clearChat, newChat:newChat,
+    loadChat:loadChat, generateImage:generateImage, selectStyle:selectStyle,
+    selectSize:selectSize, openTool:openTool, closeTool:closeTool,
+    showModal:showModal, closeModal:closeModal, saveProfile:saveProfile,
+    handleAvatarUpload:handleAvatarUpload, toggleVoice:toggleVoice,
+    callGroqAI:callGroqAI, showToast:showToast
+  };
+  for (var k in fns) { try { window[k] = fns[k]; } catch(e){} }
+  console.log('%c✅ EXBOTZ functions loaded!', 'color:#ff2d9b;font-size:14px');
+});
 
 </script>
 </body>
-         </html>
+   </html>
