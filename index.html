@@ -840,16 +840,22 @@ body::after{
   box-shadow:var(--glow-pk);
   padding:30px;width:400px;max-width:95vw;
   animation:fadeIn .3s ease;
+  position:relative;
 }
 .modal-title{
   font-family:var(--pixel);font-size:10px;
   color:var(--pk1);margin-bottom:20px;letter-spacing:2px;
 }
 .modal-close{
-  float:right;background:none;border:none;
-  color:#444;cursor:pointer;font-size:20px;
+  position:absolute;top:10px;right:10px;
+  background:var(--pk1);border:none;color:#fff;
+  cursor:pointer;font-size:22px;font-weight:bold;
+  width:44px;height:44px;display:flex;
+  align-items:center;justify-content:center;
+  touch-action:manipulation;z-index:999;
+  border-radius:2px;
 }
-.modal-close:hover{color:var(--pk1)}
+.modal-close:active{opacity:0.7;}
 
 /* ===== PIXEL ART LOADING ===== */
 .pixel-loader{
@@ -1560,9 +1566,9 @@ function w(action, arg) {
 </div><!-- end mainApp -->
 
 <!-- ===== MODALS ===== -->
-<div class="modal-overlay" id="shortcutsModal" onclick="w('closeModal','shortcutsModal')">
-  <div class="modal" onclick="event.stopPropagation()">
-    <button class="modal-close" onclick="w('closeModal','shortcutsModal')">×</button>
+<div class="modal-overlay" id="shortcutsModal" ontouchstart="this.style.display='none'" onclick="this.style.display='none'">
+  <div class="modal" >
+    <button class="modal-close" ontouchstart="document.getElementById('shortcutsModal').style.display='none'" onclick="document.getElementById('shortcutsModal').style.display='none'">✕</button>
     <div class="modal-title">⌨ KEYBOARD SHORTCUTS</div>
     <div style="display:flex;flex-direction:column;gap:10px;font-family:var(--mono);font-size:13px">
       <div class="setting-row"><span>Send Message</span><span style="color:var(--bl1);font-family:var(--pixel);font-size:8px">ENTER</span></div>
@@ -1577,8 +1583,8 @@ function w(action, arg) {
 
 <!-- ===== EDIT PROFILE MODAL ===== -->
 <div class="modal-overlay" id="editProfileModal" onclick="w('closeModal','editProfileModal')">
-  <div class="modal" onclick="event.stopPropagation()" style="width:380px">
-    <button class="modal-close" onclick="w('closeModal','editProfileModal')">×</button>
+  <div class="modal"  style="width:380px">
+    <button class="modal-close" ontouchstart="document.getElementById('editProfileModal').style.display='none'" onclick="document.getElementById('editProfileModal').style.display='none'">✕</button>
     <div class="modal-title">✏ EDIT PROFILE</div>
 
     <!-- Photo Preview in modal -->
@@ -1643,8 +1649,8 @@ function w(action, arg) {
 </div>
 
 <div class="modal-overlay" id="toolModal" onclick="w('closeModal','toolModal')">
-  <div class="modal" onclick="event.stopPropagation()">
-    <button class="modal-close" onclick="w('closeModal','toolModal')">×</button>
+  <div class="modal" >
+    <button class="modal-close" ontouchstart="document.getElementById('toolModal').style.display='none'" onclick="document.getElementById('toolModal').style.display='none'">✕</button>
     <div class="modal-title" id="toolModalTitle">TOOL</div>
     <div id="toolModalContent"></div>
   </div>
