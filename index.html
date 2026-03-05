@@ -1916,6 +1916,14 @@ function loginSuccess(name, email) {
   document.getElementById('profileEmail').textContent = email;
   trackUser(displayName, email);
   setTimeout(initAdminPanel, 300);
+  // Simpan session biar tidak keluar saat refresh
+  try {
+    localStorage.setItem('exbotz_session', JSON.stringify({
+      name: displayName, email: email,
+      avatarUrl: currentUser.avatarUrl || null,
+      savedAt: Date.now()
+    }));
+  } catch(e) {}
 
   // Set avatar in topbar
   updateAllAvatars(displayName, currentUser.avatarUrl);
@@ -2053,6 +2061,7 @@ function saveProfile() {
 }
 
 function doLogout() {
+  try { localStorage.removeItem('exbotz_session'); } catch(e) {}
   currentUser = null;
   document.getElementById('mainApp').style.display = 'none';
   document.getElementById('authScreen').style.display = 'flex';
@@ -2732,4 +2741,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </script>
 </body>
-            </html>
+          </html>
