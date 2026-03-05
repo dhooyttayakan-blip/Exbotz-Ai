@@ -392,8 +392,11 @@ body::after{content:'';position:fixed;inset:0;
 /* ── Media ── */
 @media(max-width:768px){
   /* Sidebar */
-  .sb{position:fixed;left:-260px;transition:left .3s;z-index:200;}
-  .sb.mob{left:0;}
+  .sb{position:fixed;left:-260px;transition:left .3s;z-index:200;height:100vh;height:100dvh;}
+  .sb.mob{left:0;box-shadow:4px 0 20px #ff2d7855;}
+  /* Overlay gelap saat sidebar terbuka di mobile */
+  .sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:199;}
+  .sb-overlay.on{display:block;}
 
   /* Layout utama */
   #appS{
@@ -594,6 +597,8 @@ body::after{content:'';position:fixed;inset:0;
 
 <!-- ════════════ APP SCREEN ════════════ -->
 <div id="appS" class="screen">
+  <!-- Overlay untuk tutup sidebar di mobile -->
+  <div class="sb-overlay" id="sbOverlay" onclick="closeMobSB()"></div>
   <!-- SIDEBAR -->
   <aside class="sb" id="sb">
     <div class="sb-hd">
@@ -1260,7 +1265,16 @@ function togSB(){
   document.getElementById('uinfo').style.display=sbCollapsed?'none':'';
   document.querySelectorAll('.ch-txt').forEach(e=>e.style.display=sbCollapsed?'none':'');
 }
-function togMobSB(){document.getElementById('sb').classList.toggle('mob');}
+function togMobSB(){
+  const sb=document.getElementById('sb');
+  const ov=document.getElementById('sbOverlay');
+  sb.classList.toggle('mob');
+  ov.classList.toggle('on',sb.classList.contains('mob'));
+}
+function closeMobSB(){
+  document.getElementById('sb').classList.remove('mob');
+  document.getElementById('sbOverlay').classList.remove('on');
+}
 
 let curSBTab='history';
 function sbTab(t){
@@ -1387,7 +1401,7 @@ function buildSysPrompt(){
   if(activeTools.math)sys+=' Mode KALKULATOR: jelaskan langkah perhitungan secara detail.';
   if(activeTools.sum)sys+=' Mode RINGKASAN: buat ringkasan padat, terstruktur, dan mudah dipahami.';
   if(activeTools.web)sys+=' Web search aktif: berikan info terkini dan relevan.';
-  if(activeTools.img)sys+=' Image AI aktif: deskripsikan gambar yang diminta dengan sangat detail dan kreatif, seolah-olah kamu bisa melihat dan membuat gambar tersebut.';
+  if(activeTools.img)sys+=' Image AI aktif: Ketika user minta gambar, WAJIB balas dengan format: [IMG:deskripsi gambar dalam bahasa Inggris yang detail]. Contoh: [IMG:a cute robot eating noodles, pixel art style, colorful, HD]. Setelah itu tambahkan penjelasan singkat dalam bahasa Indonesia.';
   return sys;
 }
 
@@ -1476,8 +1490,72 @@ async function sendMultiAI(txt){
 }
 
 function fmtMsg(txt){
+  // Render Image AI - [IMG:prompt]
+  txt = txt.replace(/\[IMG:([^\]]+)\]/g, function(match, prompt){
+    var enc = encodeURIComponent(prompt.trim());
+    var seed = Math.floor(Math.random()*99999);
+    var url = 'https://image.pollinations.ai/prompt/'+enc+'?width=512&height=512&seed='+seed+'&nologo=true&enhance=true&model=flux';
+    return '<div style="margin:10px 0"><div class="img-status" style="font-family:var(--font);font-size:6px;color:var(--pink);margin-bottom:6px">🎨 GENERATING IMAGE...</div><img src="'+url+'" style="max-width:100%;border:2px solid var(--pink);display:block;border-radius:2px" onload="this.previousElementSibling.textContent=\'🎨 IMAGE AI — HD ✓\';" onerror="this.previousElementSibling.textContent=\'⚠ Gagal, coba lagi\';" alt="'+prompt+'"><div style="font-size:12px;color:var(--dim);margin-top:4px;font-style:italic">'+prompt+'</div></div>';
+  });
+  // Code blocks
+  txt = txt.replace(/```[\w]*\n?([\s\S]*?)```/g, '<div class="code-bl">$1</div>');
+  // Bold
+  txt = txt.replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--pink)">$1</strong>');
+  // Italic
+  txt = txt.replace(/\*(.*?)\*/g, '<em style="color:var(--blue)">$1</em>');
+  // Newlines
+  txt = txt.replace(/\n/g, '<br>');
+  return txt;
+}
+
+async function sendMultiAI(txt){
+  const aiList=[
+    {id:'mai1',name:'AI-1 ANALYST',emoji:'🤖',style:'Kamu adalah AI Analis. Jawab dengan analisis mendalam dan terstruktur.'},
+    {id:'mai2',name:'AI-2 CREATIVE',emoji:'🧠',style:'Kamu adalah AI Kreatif. Jawab dengan sudut pandang kreatif dan tidak biasa.'},
+    {id:'mai3',name:'AI-3 SIMPLE',emoji:'⚡',style:'Kamu adalah AI Simpel. Jawab singkat, padat, dan langsung ke intinya.'},
+    {id:'mai4',name:'AI-4 CRITICAL',emoji:'🔮',style:'Kamu adalah AI Kritis. Jawab dengan sudut pandang kritis dan pertimbangkan pro-kontra.'},
+    {id:'mai5',name:'AI-5 FRIENDLY',emoji:'✨',style:'Kamu adalah AI Ramah. Jawab dengan hangat, santai, dan penuh semangat.'},
+  ];
+  const ca=document.getElementById('ca');
+  const wrap=document.createElement('div');
+  wrap.className='msg bot';
+  wrap.style.cssText='flex-direction:column;max-width:100%;';
+  wrap.innerHTML=`<div style="font-family:var(--font);font-size:7px;color:var(--yellow);margin-bottom:10px;letter-spacing:1px">🤖 MULTI-AI MODE — 5 PERSPEKTIF AKTIF</div>`;
+  ca.appendChild(wrap);
+
+  for(let i=0;i<aiList.length;i++){
+    const ai=aiList[i];
+    document.getElementById(ai.id).className='mai-badge working';
+    const sys=buildSysPrompt()+' '+ai.style+' Jangan pernah sebut nama model aslimu.';
+    const resp=await callAI(txt,sys);
+    document.getElementById(ai.id).className='mai-badge done';
+    const rd=document.createElement('div');
+    rd.className='mai-resp';
+    rd.innerHTML=`<div class="mai-resp-hd">${ai.emoji} ${ai.name}</div>${fmtMsg(resp)}`;
+    wrap.appendChild(rd);
+    ca.scrollTop=9999;
+    await new Promise(r=>setTimeout(r,300));
+  }
+  aiList.forEach(a=>document.getElementById(a.id).className='mai-badge idle');
+}
+
+function fmtMsg(txt){
   return txt
-    .replace(/```[\w]*\n?([\s\S]*?)```/g,'<div class="code-bl">$1</div>')
+    // Render Image AI dari Pollinations (gratis, HD)
+    .replace(/\[IMG:(.*?)\]/g, (match, prompt) => {
+      const enc = encodeURIComponent(prompt.trim());
+      const seed = Math.floor(Math.random()*99999);
+      const url = `https://image.pollinations.ai/prompt/${enc}?width=512&height=512&seed=${seed}&nologo=true&enhance=true`;
+      return `<div style="margin:10px 0">
+        <div style="font-family:var(--font);font-size:6px;color:var(--pink);margin-bottom:6px">🎨 GENERATING IMAGE...</div>
+        <img src="${url}" style="max-width:100%;border:2px solid var(--pink);display:block;image-rendering:auto" 
+          onload="this.previousElementSibling.textContent='🎨 IMAGE AI — HD'"
+          onerror="this.previousElementSibling.textContent='⚠ Gagal load gambar'"
+          alt="${prompt}">
+        <div style="font-size:12px;color:var(--dim);margin-top:4px">${prompt}</div>
+      </div>`;
+    })
+    .replace(/\`\`\`[\w]*\n?([\s\S]*?)\`\`\`/g,'<div class="code-bl">$1</div>')
     .replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--pink)">$1</strong>')
     .replace(/\*(.*?)\*/g,'<em style="color:var(--blue)">$1</em>')
     .replace(/\n/g,'<br>');
@@ -1733,6 +1811,7 @@ window.loadChat=loadChat;
 window.sbTab=sbTab;
 window.togSB=togSB;
 window.togMobSB=togMobSB;
+window.closeMobSB=closeMobSB;
 window.togTool=togTool;
 window.sendMsg=sendMsg;
 window.sendGlobal=sendGlobal;
@@ -1766,4 +1845,4 @@ window.doGoogle=doGoogle;
 
 </script>
 </body>
-                                                                  </html>
+         </html>
